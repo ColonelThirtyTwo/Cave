@@ -43,10 +43,10 @@ public abstract class Meshable implements Tile
 	{
 		world.getAdjacent(adj, this.x, this.y);
 		short mask = computeAdjData(adj,getMeshGroup());
-		int ne = getCornerType(mask,0);
-		int se = getCornerType(mask,1);
-		int sw = getCornerType(mask,2);
-		int nw = getCornerType(mask,3);
+		int se = getCornerType(mask,0);
+		int ne = getCornerType(mask,1);
+		int nw = getCornerType(mask,2);
+		int sw = getCornerType(mask,3);
 
 		Texture tileset = getTileset();
 		double tilew = w/2;
@@ -55,23 +55,23 @@ public abstract class Meshable implements Tile
 		double u, v;
 
 		// NE Corner
-		u = select(ne,1,3,3,2,3);
+		u = select(ne,1,1,3,2,3);
 		v = select(ne,0,2,0,0,2);
 		RenderUtil.drawImage(tileset, x+tilew, y, tilew, tileh, 1, u/4, v/4, 0.25, 0.25);
 
 		// NW Corner
-		u = select(nw,0,2,2,2,2);
-		v = select(nw,0,3,0,0,2);
+		u = select(nw,0,0,2,2,2);
+		v = select(nw,0,2,1,0,2);
 		RenderUtil.drawImage(tileset, x, y, tilew, tileh, 1, u/4, v/4, 0.25, 0.25);
 
 		// SE Corner
-		u = select(se,1,1,3,2,3);
+		u = select(se,1,1,3,3,3);
 		v = select(se,1,3,0,1,3);
 		RenderUtil.drawImage(tileset, x+tilew, y+tileh, tilew, tileh, 1, u/4, v/4, 0.25, 0.25);
 
 		// SW Corner
-		u = select(sw,0,0,3,2,2);
-		v = select(sw,1,3,1,1,2);
+		u = select(sw,0,0,2,3,2);
+		v = select(sw,1,3,1,1,3);
 		RenderUtil.drawImage(tileset, x, y+tileh, tilew, tileh, 1, u/4, v/4, 0.25, 0.25);
 	}
 

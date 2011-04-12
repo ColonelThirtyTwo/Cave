@@ -176,7 +176,7 @@ public class World
 					}
 					else if(realy > maxy) { break; }
 
-					c.tiles[x][y].draw(realx,realy,1,1);
+					if(c.tiles[x][y] != null) c.tiles[x][y].draw(realx,realy,1,1);
 				}
 			}
 		}

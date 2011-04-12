@@ -27,8 +27,9 @@ public class TestGenerator implements Generator
 					t = new Wall();
 				else
 					t = new Ground();
+					//t = null;
 				c.tiles[x][y] = t;
-				t.addedToWorld(world, Chunk.CHUNK_SIZE * cx + x, Chunk.CHUNK_SIZE * cy + y);
+				if(t != null) t.addedToWorld(world, Chunk.CHUNK_SIZE * cx + x, Chunk.CHUNK_SIZE * cy + y);
 			}
 
 		return c;

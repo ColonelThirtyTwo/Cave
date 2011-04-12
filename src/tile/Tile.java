@@ -39,7 +39,6 @@ public interface Tile //implements Serializable
 	public boolean isTransparent();
 	/**
 	 * Is the tile solid? Can entities pass through it?
-	 * @return
 	 */
 	public boolean isSolid();
 }

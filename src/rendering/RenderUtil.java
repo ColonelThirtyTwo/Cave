@@ -1,11 +1,14 @@
 package rendering;
 
 
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
+import structures.Vec2;
 
 /**
  * Groups and abstracts a few OpenGL calls
@@ -40,12 +43,16 @@ public final class RenderUtil
 //			throw new RenderError("Error initializing LWJGL: Graphics card does not support VBO's.");
 //		}
 
+		// Set up GL stuff
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glClearColor(0, 0, 0, 0);
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+		GL11.glClearColor(0, 0, 0, 0);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glColorMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
-		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+
 		GL11.glViewport(0,0,width,height);
 
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
@@ -120,5 +127,36 @@ public final class RenderUtil
 			GL11.glTexCoord2d(u,v+texh);
 			GL11.glVertex2d(x,y+h);
 		GL11.glEnd();
+	}
+
+	// Store some buffers to prevent reallocation.
+	private static FloatBuffer winBuffer = FloatBuffer.allocate(3);
+	private static FloatBuffer modelBuffer = BufferUtils.createFloatBuffer(16);
+	private static FloatBuffer projBuffer = BufferUtils.createFloatBuffer(16);
+	private static IntBuffer   viewBuffer  = BufferUtils.createIntBuffer(16);
+
+	/**
+	 * Projects world coordinates (x,y) to screen coordinates.
+	 */
+	public static Vec2 project(float x, float y)
+	{
+		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX,modelBuffer);
+		GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX,projBuffer);
+		GL11.glGetInteger(GL11.GL_VIEWPORT,viewBuffer);
+
+		GLU.gluProject(x,y,0,modelBuffer,projBuffer,viewBuffer,winBuffer);
+		return new Vec2(winBuffer.get(0), winBuffer.get(1));
+	}
+
+	/**
+	 * Unprojects screen coordinates (x,y_ to world coordinates
+	 */
+	public static Vec2 unProject(float x, float y)
+	{
+		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX,modelBuffer);
+		GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX,projBuffer);
+		GL11.glGetInteger(GL11.GL_VIEWPORT,viewBuffer);
+		GLU.gluUnProject(x, y, 0, modelBuffer, projBuffer, viewBuffer, winBuffer);
+		return new Vec2(winBuffer.get(0), winBuffer.get(1));
 	}
 }

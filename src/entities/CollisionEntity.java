@@ -2,6 +2,8 @@
 package entities;
 
 import structures.AABB;
+import structures.Vec2;
+import tile.Tile;
 import tile.World;
 
 /**
@@ -33,17 +35,54 @@ public abstract class CollisionEntity implements Entity
 	public double getX() { return box.center.x; }
 	public double getY() { return box.center.y; }
 	public AABB getAABB() { return box; }
+	
+	/**
+	 * @return The x-coordinate of the tile the entity's center is on.
+	 */
+	public int getTileX() { return (int)Math.floor(box.center.x); }
+	/**
+	 * @return The y-coordinate of the tile the entity's center is on.
+	 */
+	public int getTileY() { return (int)Math.floor(box.center.y); }
 
-	public void think()
+	/**
+	 * Does tile enter/exit callbacks. Should be called by subclasses.
+	 */
+	protected void doTileCallbacks()
 	{
-		int gx = (int)(Math.floor(box.center.x));
-		int gy = (int)(Math.floor(box.center.y));
+		int gx = getTileX();
+		int gy = getTileY();
 		if(gx != lastX || gy != lastY)
 		{
-			world.getTileAt(lastX, lastY).entityExited(this);
-			world.getTileAt(gx, gy).entityEntered(this);
+			Tile last = world.getTileAt(lastX, lastY);
+			Tile now = world.getTileAt(gx,gy);
+			if(last != null) last.entityExited(this);
+			if(now != null) now.entityEntered(this);
 			lastX = gx;
 			lastY = gy;
+		}
+	}
+
+	/**
+	 * Tile collision algorithm. Moves the entity out of a tile it is colliding with.
+	 */
+	protected void doTileCollisions()
+	{
+		Tile[] adj = new Tile[9];
+		world.getAdjacent(adj, getTileX(), getTileY());
+		adj[8] = world.getTileAt(getTileX(), getTileY());
+
+		AABB tilebox = new AABB(0,0,0.5,0.5);
+		for(int i=0; i<adj.length; i++)
+		{
+			if(adj[i] == null || !adj[i].isSolid()) continue;
+
+			tilebox.center.x = adj[i].getX();
+			tilebox.center.y = adj[i].getY();
+			if(!tilebox.overlaps(box)) continue;
+
+			Vec2 overlap = tilebox.getOverlap(box);
+			box.center.addInto(overlap);
 		}
 	}
 

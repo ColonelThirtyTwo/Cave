@@ -18,8 +18,8 @@ public class EntFollowCamera extends AbstractCamera
 	{
 		super(world);
 		ent = following;
-		this.w = w;
-		this.h = h;
+		this.w = w/2;
+		this.h = h/2;
 	}
 
 	protected AABB getCameraBounds()

@@ -4,10 +4,12 @@ package rendering.camera;
 import org.lwjgl.opengl.GL11;
 import rendering.RenderUtil;
 import structures.AABB;
+import structures.Vec2;
 import tile.World;
 
 /**
- * Abstract camera class
+ * Abstract camera class. Renders everything inside of getCameraBounds without any
+ * additional transformations.
  * @author Colonel32
  */
 public abstract class AbstractCamera implements Camera
@@ -40,4 +42,18 @@ public abstract class AbstractCamera implements Camera
 
 		GL11.glPopMatrix();
 	}
+
+//	public void screen2world(Vec2 v, double x, double y)
+//	{
+//		int screenx = RenderUtil.width();
+//		int screeny = RenderUtil.height();
+//		AABB box = getCameraBounds();
+//
+//
+//	}
+//
+//	public void world2screen(Vec2 v, double worldx, double worldy)
+//	{
+//
+//	}
 }

@@ -1,6 +1,8 @@
 
 package cave2;
 
+import entities.Entity;
+import entities.types.TestEntity;
 import input.InputCallback;
 import java.util.*;
 import java.util.logging.Level;
@@ -10,6 +12,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import rendering.RenderError;
 import rendering.RenderUtil;
 import rendering.camera.*;
@@ -53,6 +57,8 @@ public class Main
 		cam = new StaticCamera(world,0,0,RenderUtil.width()/20,RenderUtil.height()/20);
 		inputCallbacks = new ArrayList<InputCallback>();
 
+		Entity e = new TestEntity(5.0,5.0);
+		world.addEntity(e);
 
 		log.log(Level.INFO,"Finished initialising, entering main loop.");
 		try
@@ -64,23 +70,31 @@ public class Main
 			log.log(Level.SEVERE, "Error: {0}", err.getMessage());
 		}
 
-		ResourceManager.getInstance().releaseAll();
+		ResourceManager.getInstance().unloadAll();
 		RenderUtil.destroy();
     }
 
 	private static boolean mainLoop()
 	{
+		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) return false;
+		if(Display.isCloseRequested()) return false;
+
 		long thisFrame = System.currentTimeMillis();
 		int delta = (int)(thisFrame - lastFrame);
 
 		doEventHandler();
 		world.think(delta);
 		cam.draw();
-		RenderUtil.update();
-		Display.sync(60);
 
-		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) return false;
-		if(Display.isCloseRequested()) return false;
+		double fps = 1000.0 / delta;
+		Font f = ResourceManager.getInstance().getFont("SansSerif");
+		f.drawString(0, 0, String.format("FPS: %.3f", fps), Color.yellow);
+		f.drawString(0, 20, String.format("Time: %d", thisFrame), Color.yellow);
+
+		RenderUtil.update();
+		//Display.sync(60);
+
+		lastFrame = thisFrame;
 		return true;
 	}
 

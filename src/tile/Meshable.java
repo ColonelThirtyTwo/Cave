@@ -9,8 +9,8 @@ import structures.Vec2;
  * Tile class that handles tiles that "mesh" together. Like the walls in most
  * tile-based games. Most similar to the early Legend of Zelda games.
  *
- * Implementing classes should load an image of quarter tiles. This class assembles
- * the quarters into complete tiles and caches/renders them.
+ * Implementing classes should load an image of quarter tiles. This class will
+ * render four quads with the appropriate texture coordinates.
  * @author Colonel32
  */
 public abstract class Meshable implements Tile
@@ -41,6 +41,7 @@ public abstract class Meshable implements Tile
 
 	public void draw(double x, double y, double w, double h)
 	{
+		//if(this.x != 5 || this.y != -1) return;
 		world.getAdjacent(adj, this.x, this.y);
 		short mask = computeAdjData(adj,getMeshGroup());
 		int se = getCornerType(mask,0);

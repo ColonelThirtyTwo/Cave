@@ -77,8 +77,8 @@ public abstract class CollisionEntity implements Entity
 		{
 			if(adj[i] == null || !adj[i].isSolid()) continue;
 
-			tilebox.center.x = adj[i].getX();
-			tilebox.center.y = adj[i].getY();
+			tilebox.center.x = adj[i].getX()+0.5;
+			tilebox.center.y = adj[i].getY()+0.5;
 			if(!tilebox.overlaps(box)) continue;
 
 			Vec2 overlap = tilebox.getOverlap(box);

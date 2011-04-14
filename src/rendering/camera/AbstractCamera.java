@@ -43,17 +43,17 @@ public abstract class AbstractCamera implements Camera
 		GL11.glPopMatrix();
 	}
 
-//	public void screen2world(Vec2 v, double x, double y)
-//	{
-//		int screenx = RenderUtil.width();
-//		int screeny = RenderUtil.height();
-//		AABB box = getCameraBounds();
-//
-//
-//	}
-//
-//	public void world2screen(Vec2 v, double worldx, double worldy)
-//	{
-//
-//	}
+	public void screen2world(Vec2 v, double x, double y)
+	{
+		int screenx = RenderUtil.width();
+		int screeny = RenderUtil.height();
+		AABB box = getCameraBounds();
+
+
+	}
+
+	public void world2screen(Vec2 v, double worldx, double worldy)
+	{
+
+	}
 }

@@ -2,14 +2,12 @@
 package cave2;
 
 import entities.Entity;
-import entities.types.TestEntity;
+import entities.types.Player;
 import input.InputCallback;
-import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.Color;
@@ -33,10 +31,12 @@ public class Main
 	private static World world;
 	private static Camera cam;
 
-	private static List<InputCallback> inputCallbacks;
+	private static double fps_smoother;
 
     public static void main(String[] args)
 	{
+		fps_smoother = 0;
+
 		DisplayMode mode = getDisplayMode();
 		log.log(Level.INFO, "Attempting to set LWJGL display to {0}x{1}x{2}", new Object[]{mode.getWidth(), mode.getHeight(), mode.getBitsPerPixel()});
         try
@@ -55,9 +55,8 @@ public class Main
 		log.log(Level.INFO, "Intitializing world...");
 		world = new World(new TestGenerator());
 		cam = new StaticCamera(world,0,0,RenderUtil.width()/20,RenderUtil.height()/20);
-		inputCallbacks = new ArrayList<InputCallback>();
 
-		Entity e = new TestEntity(5.0,5.0);
+		Entity e = new Player(5,5);
 		world.addEntity(e);
 
 		log.log(Level.INFO,"Finished initialising, entering main loop.");
@@ -82,38 +81,21 @@ public class Main
 		long thisFrame = System.currentTimeMillis();
 		int delta = (int)(thisFrame - lastFrame);
 
-		doEventHandler();
+		InputCallback.poll();
 		world.think(delta);
 		cam.draw();
 
 		double fps = 1000.0 / delta;
+		//fps_smoother = (fps_smoother * 0.99) + (fps * 0.01);
 		Font f = ResourceManager.getInstance().getFont("SansSerif");
 		f.drawString(0, 0, String.format("FPS: %.3f", fps), Color.yellow);
-		f.drawString(0, 20, String.format("Time: %d", thisFrame), Color.yellow);
+		f.drawString(0, 20, String.format("Time Delta: %d", delta), Color.yellow);
 
 		RenderUtil.update();
-		//Display.sync(60);
+		Display.sync(60);
 
 		lastFrame = thisFrame;
 		return true;
-	}
-
-	private static void doEventHandler()
-	{
-		while(Keyboard.next())
-		{
-			for(int i=0; i<inputCallbacks.size(); i++)
-				inputCallbacks.get(i).keyEvent(Keyboard.getEventKey(), Keyboard.getEventKeyState());
-		}
-		while(Mouse.next())
-		{
-			if(Mouse.getEventButton() != -1)
-				for(int i=0; i<inputCallbacks.size(); i++)
-					inputCallbacks.get(i).mouseButtonEvent(Mouse.getEventX(), Mouse.getEventY(), Mouse.getEventButton(), Mouse.getEventButtonState());
-			if(Mouse.getEventDWheel() != 0 || Mouse.getEventDX() != 0 || Mouse.getEventDY() != 0)
-				for(int i=0; i<inputCallbacks.size(); i++)
-					inputCallbacks.get(i).mouseMovedEvent(Mouse.getEventX(), Mouse.getEventY(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel());
-		}
 	}
 
 	private static DisplayMode getDisplayMode()

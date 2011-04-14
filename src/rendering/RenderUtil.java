@@ -8,6 +8,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.opengl.Texture;
+import structures.AABB;
 import structures.Vec2;
 
 /**
@@ -52,6 +53,10 @@ public final class RenderUtil
 		GL11.glClearColor(0, 0, 0, 0);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glColorMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+		GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST);
+		GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST);
 
 		GL11.glViewport(0,0,width,height);
 
@@ -129,6 +134,12 @@ public final class RenderUtil
 		GL11.glEnd();
 	}
 
+	public static void drawImage(Texture image, AABB box, double brightness)
+	{
+		drawImage(image, box.center.x - box.size.x, box.center.y - box.size.y,
+				box.size.x*2, box.size.y*2, brightness);
+	}
+
 	// Store some buffers to prevent reallocation.
 	private static FloatBuffer winBuffer = FloatBuffer.allocate(3);
 	private static FloatBuffer modelBuffer = BufferUtils.createFloatBuffer(16);
@@ -136,7 +147,8 @@ public final class RenderUtil
 	private static IntBuffer   viewBuffer  = BufferUtils.createIntBuffer(16);
 
 	/**
-	 * Projects world coordinates (x,y) to screen coordinates.
+	 * Projects world coordinates (x,y) to screen coordinates, using the
+	 * existing matrix stack
 	 */
 	public static Vec2 project(float x, float y)
 	{
@@ -149,7 +161,8 @@ public final class RenderUtil
 	}
 
 	/**
-	 * Unprojects screen coordinates (x,y_ to world coordinates
+	 * Unprojects screen coordinates (x,y) to world coordinates, using the
+	 * existing matrix stack
 	 */
 	public static Vec2 unProject(float x, float y)
 	{

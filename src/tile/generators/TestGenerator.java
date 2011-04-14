@@ -21,13 +21,10 @@ public class TestGenerator implements Generator
 			for(int y=0; y<Chunk.CHUNK_SIZE; y++)
 			{
 				Tile t;
-				if(x == 0 || x == Chunk.CHUNK_SIZE - 1 ||
-						y == 0 || y == Chunk.CHUNK_SIZE - 1)
-					//t = new Blue();
+				if(x % 3 == 0 && y % 3 == 0)
 					t = new Wall();
 				else
 					t = new Ground();
-					//t = null;
 				c.tiles[x][y] = t;
 				if(t != null) t.addedToWorld(world, Chunk.CHUNK_SIZE * cx + x, Chunk.CHUNK_SIZE * cy + y);
 			}

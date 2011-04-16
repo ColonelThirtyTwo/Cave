@@ -13,17 +13,21 @@ public class EntFollowCamera extends AbstractCamera
 {
 	protected Entity ent;
 	protected double w, h;
+	protected AABB box;
 
-	public EntFollowCamera(World world, Entity following, double w, double h)
+	public EntFollowCamera(Entity following, double w, double h)
 	{
-		super(world);
+		super();
 		ent = following;
 		this.w = w/2;
 		this.h = h/2;
+		box = new AABB(ent.getX(), ent.getY(), this.w, this.h);
 	}
 
 	protected AABB getCameraBounds()
 	{
-		return new AABB(ent.getX(), ent.getY(), w, h);
+		box.center.x = ent.getX();
+		box.center.y = ent.getY();
+		return box;
 	}
 }

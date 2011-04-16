@@ -5,6 +5,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.opengl.Texture;
@@ -33,6 +35,9 @@ public final class RenderUtil
 			Display.setFullscreen(fullscreen);
 			Display.setVSyncEnabled(fullscreen);
 			Display.create();
+
+			Mouse.create();
+			Keyboard.create();
 		}
 		catch(LWJGLException e)
 		{

@@ -20,4 +20,6 @@ public abstract class EffectEntity implements Entity
 		assert(w == world);
 		world = null;
 	}
+
+	public World getWorld() { return world; }
 }

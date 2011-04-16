@@ -2,7 +2,7 @@
 package entities.types;
 
 import entities.CollisionEntity;
-import input.InputCallback;
+//import input.InputCallback;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.opengl.Texture;
 import rendering.RenderUtil;
@@ -15,42 +15,6 @@ import structures.ResourceManager;
  */
 public class Player extends CollisionEntity
 {
-	private class PlyInput extends InputCallback
-	{
-		public void keyEvent(int key, boolean isdown)
-		{
-			if(key == KEY_UP)
-				diry = isdown ? -1 : 0;
-			else if(key == KEY_DOWN)
-				diry = isdown ? 1 : 0;
-			else if(key == KEY_RIGHT)
-				dirx = isdown ? 1 : 0;
-			else if(key == KEY_LEFT)
-				dirx = isdown ? -1 : 0;
-		}
-
-		public void mouseMovedEvent(int newx, int newy, int dx, int dy, int dwheel)
-		{
-
-		}
-
-		public void mouseButtonEvent(int x, int y, int button, boolean down)
-		{
-
-		}
-//		private void fix()
-//		{
-//			if(dirx >  1) dirx = 1;
-//			if(dirx < -1) dirx = -1;
-//			if(diry >  1) diry = 1;
-//			if(diry < -1) diry = -1;
-//		}
-	}
-
-	public static int KEY_UP = Keyboard.KEY_W;
-	public static int KEY_DOWN = Keyboard.KEY_S;
-	public static int KEY_LEFT = Keyboard.KEY_A;
-	public static int KEY_RIGHT = Keyboard.KEY_D;
 
 	/**
 	 * Speed, in tiles per second.
@@ -66,15 +30,11 @@ public class Player extends CollisionEntity
 	 */
 	protected int diry;
 
-	private InputCallback plyInputCallback;
-
 	public Player(double x, double y)
 	{
 		super(x,y,.5,.5);
 		speed = 5.0;
 		dirx = diry = 0;
-		plyInputCallback = new PlyInput();
-		plyInputCallback.enable();
 	}
 
 	public void collidedWith(CollisionEntity e) {}
@@ -95,9 +55,37 @@ public class Player extends CollisionEntity
 		if(!abox.overlaps(box)) return;
 		
 		Texture img = ResourceManager.getInstance().getImage("entities/player.png");
-		//RenderUtil.drawImage(img, box.center.x - box.size.x, box.center.y - box.size.y, box.size.x*2, box.size.y*2);
 		RenderUtil.drawImage(img, box, 1.0);
 	}
 
-	
+	/**
+	 * Sets the player x movement velocity.
+	 * 1  = move to right at normal speed
+	 * 0  = stop
+	 * -1 = move to left at normal speed
+	 */
+	public void setMovementX(int x) { dirx = x; }
+	/**
+	 * Sets the player y movement velocity.
+	 * 1  = move downward at normal speed
+	 * 0  = stop
+	 * -1 = move upward at normal speed
+	 */
+	public void setMovementY(int y) { diry = y; }
+	/**
+	 * Main weapon/tool fire
+	 * @param x X position in world coordinates
+	 * @param y Y position in world coordinates
+	 * @param isdown true = start use, false = end use.
+	 */
+	public void mainUse(double x, double y, boolean isdown)
+	{}
+	/**
+	 * Same as mainUse, except triggers the weapon/tool's alt fire.
+	 * @param x X position in world coordinates
+	 * @param y Y position in world coordinates
+	 * @param isdown true = start use, false = end use.
+	 */
+	public void altUse(double x, double y, boolean isdown)
+	{}
 }

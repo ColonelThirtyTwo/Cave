@@ -122,6 +122,7 @@ public class BufferedSet<T> extends AbstractCollection<T> implements Iterable<T>
 	 * Unlocks the set and applies the queued tasks.
 	 * @throws IllegalStateException If the set is not locked.
 	 */
+	@SuppressWarnings("unchecked")
 	public synchronized void unlock()
 	{
 		if(!locked) throw new IllegalStateException("unlock() called on unlocked set.");
@@ -129,7 +130,7 @@ public class BufferedSet<T> extends AbstractCollection<T> implements Iterable<T>
 		{
 			Action a = buffer.poll();
 			if(a.type == ActionID.ADD)
-				main.put((T)(a.data),true);
+				main.put((T)(a.data),true); // TODO: Causes unchecked cast warning...
 			else if(a.type == ActionID.REMOVE)
 				main.remove((T)(a.data));
 			returnAction(a);
@@ -159,7 +160,7 @@ public class BufferedSet<T> extends AbstractCollection<T> implements Iterable<T>
 		if(locked)
 			buffer.add(getAction(ActionID.REMOVE,o));
 		else
-			main.remove(o);
+			main.remove(o); // TODO: Causes suspicious call warning...
 		return true;
 	}
 	
@@ -173,7 +174,7 @@ public class BufferedSet<T> extends AbstractCollection<T> implements Iterable<T>
 	 */
 	public boolean contains(Object o)
 	{
-		return main.containsKey(o);
+		return main.containsKey(o); // TODO: Causes suspicious call warning...
 	}
 
 	/**

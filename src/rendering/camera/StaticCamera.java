@@ -2,7 +2,6 @@
 package rendering.camera;
 
 import structures.AABB;
-import tile.World;
 
 /**
  * Camera that stays in place, without moving
@@ -11,9 +10,8 @@ import tile.World;
 public class StaticCamera extends AbstractCamera
 {
 	protected AABB box;
-	public StaticCamera(World world, double x, double y, double w, double h)
+	public StaticCamera(double x, double y, double w, double h)
 	{
-		super(world);
 		box = new AABB(x,y,w/2,h/2);
 	}
 

@@ -26,4 +26,6 @@ public interface Entity
 
 	public void addedToWorld(World w);
 	public void removedFromWorld(World w);
+
+	public World getWorld();
 }

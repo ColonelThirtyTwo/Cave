@@ -97,4 +97,6 @@ public abstract class CollisionEntity implements Entity
 		assert(w == world);
 		world = null;
 	}
+
+	public World getWorld() { return world; }
 }

@@ -3,6 +3,7 @@ package tile;
 
 import java.util.*;
 import entities.Entity;
+import rendering.camera.Camera;
 import structures.AABB;
 import structures.BufferedSet;
 import structures.HashGrid;
@@ -17,13 +18,16 @@ public class World
 	protected HashGrid<Chunk> grid;
 	protected BufferedSet<Entity> ents;
 	protected Generator generator;
+	protected Camera camera;
 
-	public World(Generator generator)
+	public World(Generator generator, Camera camera)
 	{
 		//spatialMap = new HashMap<Long,Chunk>();
 		grid = new HashGrid<Chunk>();
 		ents = new BufferedSet<Entity>();
 		this.generator = generator;
+		this.camera = camera;
+		if(camera != null) camera.setWorld(this);
 	}
 
 	/**
@@ -180,6 +184,16 @@ public class World
 				}
 			}
 		}
+	}
+
+	public void setCamera(Camera cam)
+	{
+		this.camera = cam;
+		cam.setWorld(this);
+	}
+	public Camera getCamera()
+	{
+		return camera;
 	}
 
 	private static int wrap(int n, int max)

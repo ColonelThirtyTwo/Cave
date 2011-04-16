@@ -15,10 +15,12 @@ import tile.World;
 public abstract class AbstractCamera implements Camera
 {
 	protected World world;
-	public AbstractCamera(World w)
+	public AbstractCamera()
 	{
-		this.world = w;
+		world = null;
 	}
+
+	public void setWorld(World w) { world = w; }
 
 	protected abstract AABB getCameraBounds();
 
@@ -48,12 +50,28 @@ public abstract class AbstractCamera implements Camera
 		int screenx = RenderUtil.width();
 		int screeny = RenderUtil.height();
 		AABB box = getCameraBounds();
-
-
+		x -= screenx / 2;
+		y -= screeny / 2;
+		x /= screenx / box.size.x / 2;
+		y /= screeny / box.size.y / 2;
+		x += box.center.x;
+		y += box.center.y;
+		v.x = x;
+		v.y = y;
 	}
 
-	public void world2screen(Vec2 v, double worldx, double worldy)
+	public void world2screen(Vec2 v, double x, double y)
 	{
-
+		int screenx = RenderUtil.width();
+		int screeny = RenderUtil.height();
+		AABB box = getCameraBounds();
+		x -= box.center.x;
+		y -= box.center.y;
+		x *= screenx / box.size.x / 2;
+		y *= screeny / box.size.y / 2;
+		x += screenx / 2;
+		y += screeny / 2;
+		v.x = x;
+		v.y = y;
 	}
 }

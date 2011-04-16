@@ -4,6 +4,7 @@ package cave2;
 import entities.Entity;
 import entities.types.Player;
 import input.InputCallback;
+import input.PlayerInputListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -53,11 +54,15 @@ public class Main
 		lastFrame = System.currentTimeMillis();
 
 		log.log(Level.INFO, "Intitializing world...");
-		world = new World(new TestGenerator());
-		cam = new StaticCamera(world,0,0,RenderUtil.width()/20,RenderUtil.height()/20);
 
+		//cam = new StaticCamera(world,0,0,RenderUtil.width()/40,RenderUtil.height()/40);
 		Entity e = new Player(5,5);
+		cam = new EntFollowCamera(e,RenderUtil.width()/40,RenderUtil.height()/40);
+
+		world = new World(new TestGenerator(), cam);
 		world.addEntity(e);
+
+		(new PlayerInputListener((Player)e)).enable();
 
 		log.log(Level.INFO,"Finished initialising, entering main loop.");
 		try
@@ -89,7 +94,6 @@ public class Main
 		//fps_smoother = (fps_smoother * 0.99) + (fps * 0.01);
 		Font f = ResourceManager.getInstance().getFont("SansSerif");
 		f.drawString(0, 0, String.format("FPS: %.3f", fps), Color.yellow);
-		f.drawString(0, 20, String.format("Time Delta: %d", delta), Color.yellow);
 
 		RenderUtil.update();
 		Display.sync(60);
@@ -115,6 +119,6 @@ public class Main
 		return max;
 	}
 
-	private Main() {
-	}
+	/** Shut up netbeans... */
+	private Main() {}
 }

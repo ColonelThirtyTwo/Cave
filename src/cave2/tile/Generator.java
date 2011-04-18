@@ -7,5 +7,5 @@ package cave2.tile;
  */
 public interface Generator
 {
-	public Chunk generate(World w, int cx, int cy);
+	public void generate(World w, Chunk c, int cx, int cy);
 }

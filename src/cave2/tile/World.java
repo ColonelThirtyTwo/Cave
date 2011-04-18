@@ -6,6 +6,7 @@ import cave2.entities.Entity;
 import cave2.rendering.camera.Camera;
 import cave2.structures.AABB;
 import cave2.structures.BufferedSet;
+import cave2.structures.GeneratorThread;
 import cave2.structures.HashGrid;
 
 /**
@@ -86,9 +87,9 @@ public class World
 
 	protected void createChunk(int cx, int cy)
 	{
-		Chunk c = generator.generate(this, cx, cy);
-		assert(c.x == cx && c.y == cy);
-		//spatialMap.put((long)cx << 32 | cy, c);
+		Chunk c = new Chunk(cx,cy);
+//		generator.generate(this, c, cx, cy);
+		GeneratorThread.add(this, c, generator);
 		grid.set(cx, cy, c);
 	}
 
@@ -103,11 +104,24 @@ public class World
 			{
 				Chunk c = getChunk(x,y);
 				if(c == null)
-				{
 					createChunk(x,y);
-					c = getChunk(x,y);
-				}
-				list.add(c);
+				else if(c.isGenerated)
+					list.add(c);
+			}
+	}
+
+	public void generateRegion(AABB box)
+	{
+		int xl = (int)Math.floor((box.center.x-box.size.x) / Chunk.CHUNK_SIZE);
+		int xh = (int)Math.floor((box.center.x+box.size.x) / Chunk.CHUNK_SIZE);
+		int yl = (int)Math.floor((box.center.y-box.size.y) / Chunk.CHUNK_SIZE);
+		int yh = (int)Math.floor((box.center.y+box.size.y) / Chunk.CHUNK_SIZE);
+		for(int x = xl; x <= xh; x++)
+			for(int y = yl; y <= yh; y++)
+			{
+				Chunk c = getChunk(x,y);
+				if(c == null)
+					createChunk(x,y);
 			}
 	}
 

@@ -18,7 +18,7 @@ public class SimplePerlinGenerator implements Generator
 
 	private double threshold;
 	private ModuleBase generator;
-	private SampleMeasurer measurer;
+	//private SampleMeasurer measurer;
 	private Perlin perlin;
 
 	public SimplePerlinGenerator(double threshold, int seed)
@@ -30,8 +30,9 @@ public class SimplePerlinGenerator implements Generator
 			perlin = new Perlin();
 			perlin.setSeed(seed);
 			perlin.setOctaveCount(2);
-			measurer = new SampleMeasurer(perlin);
-			ScaleBias normalizer = new ScaleBias(measurer);
+			//measurer = new SampleMeasurer(perlin);
+			//ScaleBias normalizer = new ScaleBias(measurer);
+			ScaleBias normalizer = new ScaleBias(perlin);
 			normalizer.setBias(0.5);
 			normalizer.setScale(0.5);
 			ScalePoint scalar = new ScalePoint(normalizer);
@@ -46,11 +47,9 @@ public class SimplePerlinGenerator implements Generator
 
 	}
 
-	public Chunk generate(World w, int cx, int cy)
+	public void generate(World w, Chunk c, int cx, int cy)
 	{
-		Chunk c = new Chunk(cx,cy);
-
-		measurer.sampleCount = 0;
+		//measurer.sampleCount = 0;
 		int ox = cx * Chunk.CHUNK_SIZE;
 		int oy = cy * Chunk.CHUNK_SIZE;
 		for(int x=0; x<Chunk.CHUNK_SIZE; x++)
@@ -64,9 +63,6 @@ public class SimplePerlinGenerator implements Generator
 				c.tiles[x][y] = t;
 				if(t != null) t.addedToWorld(w, ox+x, oy+y);
 			}
-		log.info(String.format("Perlin generated chunk (%d,%d), %d perlin samples, %d noise samples"
-				,cx,cy,measurer.sampleCount,measurer.sampleCount * perlin.getOctaveCount()));
-
-		return c;
+		c.isGenerated = true;
 	}
 }

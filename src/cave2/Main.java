@@ -17,6 +17,7 @@ import cave2.rendering.RenderError;
 import cave2.rendering.RenderUtil;
 import cave2.rendering.camera.*;
 import cave2.rendering.hud.HudElement;
+import cave2.structures.GeneratorThread;
 import cave2.structures.ResourceManager;
 import cave2.tile.World;
 import cave2.tile.generators.*;
@@ -57,6 +58,7 @@ public class Main
 		lastFrame = System.currentTimeMillis();
 
 		log.log(Level.INFO, "Intitializing world...");
+		GeneratorThread.init(2);
 
 		//cam = new StaticCamera(world,0,0,RenderUtil.width()/40,RenderUtil.height()/40);
 		Entity e = new Player(5,5);

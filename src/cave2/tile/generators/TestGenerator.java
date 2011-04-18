@@ -13,10 +13,8 @@ import cave2.tile.types.*;
  */
 public class TestGenerator implements Generator
 {
-	public Chunk generate(World world, int cx, int cy)
+	public void generate(World world, Chunk c, int cx, int cy)
 	{
-		Chunk c = new Chunk(cx,cy);
-
 		for(int x=0; x<Chunk.CHUNK_SIZE; x++)
 			for(int y=0; y<Chunk.CHUNK_SIZE; y++)
 			{
@@ -28,7 +26,6 @@ public class TestGenerator implements Generator
 				c.tiles[x][y] = t;
 				if(t != null) t.addedToWorld(world, Chunk.CHUNK_SIZE * cx + x, Chunk.CHUNK_SIZE * cy + y);
 			}
-
-		return c;
+		c.isGenerated = true;
 	}
 }

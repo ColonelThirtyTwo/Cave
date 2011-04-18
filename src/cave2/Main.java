@@ -1,10 +1,10 @@
 
 package cave2;
 
-import entities.Entity;
-import entities.types.Player;
-import input.InputCallback;
-import input.PlayerInputListener;
+import cave2.entities.Entity;
+import cave2.entities.types.Player;
+import cave2.input.PlayerInputListener;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -13,12 +13,13 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
-import rendering.RenderError;
-import rendering.RenderUtil;
-import rendering.camera.*;
-import structures.ResourceManager;
-import tile.World;
-import tile.generators.*;
+import cave2.rendering.RenderError;
+import cave2.rendering.RenderUtil;
+import cave2.rendering.camera.*;
+import cave2.rendering.hud.HudElement;
+import cave2.structures.ResourceManager;
+import cave2.tile.World;
+import cave2.tile.generators.*;
 
 /**
  *
@@ -36,6 +37,8 @@ public class Main
 
     public static void main(String[] args)
 	{
+		log.setLevel(Level.FINE);
+
 		fps_smoother = 0;
 
 		DisplayMode mode = getDisplayMode();
@@ -59,7 +62,7 @@ public class Main
 		Entity e = new Player(5,5);
 		cam = new EntFollowCamera(e,RenderUtil.width()/40,RenderUtil.height()/40);
 
-		world = new World(new TestGenerator(), cam);
+		world = new World(new SimplePerlinGenerator(0.5,(new Random()).nextInt()), cam);
 		world.addEntity(e);
 
 		(new PlayerInputListener((Player)e)).enable();
@@ -86,13 +89,13 @@ public class Main
 		long thisFrame = System.currentTimeMillis();
 		int delta = (int)(thisFrame - lastFrame);
 
-		InputCallback.poll();
+		HudElement.poll();
 		world.think(delta);
 		cam.draw();
 
 		double fps = 1000.0 / delta;
 		//fps_smoother = (fps_smoother * 0.99) + (fps * 0.01);
-		Font f = ResourceManager.getInstance().getFont("SansSerif");
+		Font f = ResourceManager.getInstance().getFont("monospace");
 		f.drawString(0, 0, String.format("FPS: %.3f", fps), Color.yellow);
 
 		RenderUtil.update();

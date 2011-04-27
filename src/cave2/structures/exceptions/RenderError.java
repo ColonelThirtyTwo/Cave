@@ -1,5 +1,5 @@
 
-package cave2.rendering;
+package cave2.structures.exceptions;
 
 /**
  * Generic rendering error exception, usually thrown during initialization.

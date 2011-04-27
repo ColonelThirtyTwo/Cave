@@ -4,7 +4,10 @@ package cave2.input;
 import cave2.entities.types.Player;
 import org.lwjgl.input.Keyboard;
 import cave2.rendering.camera.Camera;
+import cave2.structures.LogU;
 import cave2.structures.Vec2;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Handles forwarding input to a player class.
@@ -12,10 +15,15 @@ import cave2.structures.Vec2;
  */
 public class PlayerInputListener extends InputCallback
 {
+	private static final Logger log = LogU.getLogger();
+
 	public static int KEY_UP = Keyboard.KEY_W;
 	public static int KEY_DOWN = Keyboard.KEY_S;
 	public static int KEY_LEFT = Keyboard.KEY_A;
 	public static int KEY_RIGHT = Keyboard.KEY_D;
+
+	public static int BUTTON_MAINUSE = 0;
+	public static int BUTTON_ALTUSE = 1;
 
 	private Vec2 xform;
 	protected Player ply;
@@ -26,7 +34,6 @@ public class PlayerInputListener extends InputCallback
 		xform = new Vec2();
 	}
 
-	@Override
 	public void keyEvent(int key, boolean down)
 	{
 		if(key == KEY_UP)
@@ -39,20 +46,24 @@ public class PlayerInputListener extends InputCallback
 			ply.setMovementX(down ? -1 : 0);
 	}
 
-	@Override
 	public void mouseMovedEvent(int newx, int newy, int dx, int dy, int dwheel)
 	{
-		
+		if(dwheel != 0)
+		{
+			log.log(Level.FINE, "Mouse Wheel Event, dwheel = {0}", dwheel);
+			ply.setEquippedSlot(ply.getEquippedSlot() - dwheel / 120);
+		}
 	}
 
-	@Override
 	public void mouseButtonEvent(int x, int y, int button, boolean down)
 	{
 		Camera cam = ply.getWorld().getCamera();
 		cam.screen2world(xform, x, y);
-		if(button == 1)
+
+		// LWJGL is <sarcasm>cool</sarcasm> in that 1 = LMB and 2 = RMB...
+		if(button == BUTTON_MAINUSE)
 			ply.mainUse(xform.x, xform.y, down);
-		else if(button == 2)
+		else if(button == BUTTON_ALTUSE)
 			ply.altUse(xform.x, xform.y, down);
 	}
 	

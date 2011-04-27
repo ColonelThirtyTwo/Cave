@@ -1,6 +1,7 @@
 
 package cave2.tile;
 
+import cave2.entities.CollisionEntity;
 import java.util.*;
 import cave2.entities.Entity;
 import cave2.rendering.camera.Camera;
@@ -41,6 +42,15 @@ public class World
 		int ox = wrap(x,Chunk.CHUNK_SIZE);
 		int oy = wrap(y,Chunk.CHUNK_SIZE);
 		return c.tiles[ox][oy];
+	}
+
+	public void setTile(int x, int y, Tile t)
+	{
+		Chunk c = getContainingChunk(x,y);
+		if(c == null) throw new RuntimeException();
+		int ox = wrap(x,Chunk.CHUNK_SIZE);
+		int oy = wrap(y,Chunk.CHUNK_SIZE);
+		c.tiles[ox][oy] = t;
 	}
 
 	/**
@@ -139,10 +149,9 @@ public class World
 	public void think(int timeDelta)
 	{
 		ents.lock();
+		doEntityCollisions();
 		for(Entity e : ents)
-		{
 			e.think(timeDelta);
-		}
 		ents.unlock();
 	}
 	public void draw(AABB clip)
@@ -200,6 +209,25 @@ public class World
 		}
 	}
 
+	protected void doEntityCollisions()
+	{
+		for(Entity e : ents)
+		{
+			if(!(e instanceof CollisionEntity)) continue;
+			for(Entity e2 : ents)
+			{
+				if(!(e2 instanceof CollisionEntity) || e2 == e) continue;
+				CollisionEntity c1 = (CollisionEntity) e;
+				CollisionEntity c2 = (CollisionEntity) e2;
+				if(c1.getAABB().overlaps(c2.getAABB()))
+				{
+					c1.collidedWith(c2);
+					c2.collidedWith(c1);
+				}
+			}
+		}
+	}
+
 	public void setCamera(Camera cam)
 	{
 		this.camera = cam;
@@ -215,5 +243,19 @@ public class World
 		n = n % max;
 		if(n < 0) n += max;
 		return n;
+	}
+
+	public Tile rayTrace(double startx, double starty, double dirx, double diry)
+	{
+		int x = (int)Math.floor(startx);
+		int y = (int)Math.floor(starty);
+
+		double ox = startx - x;
+		double oy = starty - y;
+
+		double tmaxx = oy / Math.cos(Math.atan(dirx / diry));
+		double tmaxy = ox / Math.cos(Math.atan(diry / dirx));
+
+		return null;
 	}
 }

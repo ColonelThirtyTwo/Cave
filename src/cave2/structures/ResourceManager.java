@@ -9,7 +9,9 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
-import cave2.rendering.RenderError;
+import cave2.structures.exceptions.RenderError;
+import java.util.logging.Level;
+import org.lwjgl.opengl.GL11;
 
 /**
  *
@@ -17,7 +19,7 @@ import cave2.rendering.RenderError;
  */
 public class ResourceManager
 {
-	private final static Logger log = Logger.getLogger("cave2");
+	private static final Logger log = LogU.getLogger();
 
 	public static int fontRenderSize = 12;
 
@@ -41,7 +43,11 @@ public class ResourceManager
 
 		try
 		{
-			t = TextureLoader.getTexture("PNG", new FileInputStream("res/images/"+path));
+			log.log(Level.FINE, "Loading resource /res/images/{0}", path);
+			t = TextureLoader.getTexture("PNG", new FileInputStream("res/images/"+path),GL11.GL_NEAREST);
+			log.log(Level.FINER, "Width:{0}, Height:{1}, Image Width:{2}, Image Height:{3}, Texture Width:{4}, Texture Height:{5}",
+					new Object[] {t.getWidth(), t.getHeight(), t.getImageWidth(), t.getImageHeight(),
+					t.getTextureWidth(), t.getTextureHeight()});
 		}
 		catch(IOException err)
 		{

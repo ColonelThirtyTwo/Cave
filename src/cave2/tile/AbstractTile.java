@@ -37,6 +37,8 @@ public abstract class AbstractTile implements Tile
 		isInWorld = false;
 	}
 
+	public World getWorld() { return world; }
+
 	public int getX() { return x; }
 	public int getY() { return y; }
 	public void getPos(Vec2 v) { v.x = x; v.y = y; }

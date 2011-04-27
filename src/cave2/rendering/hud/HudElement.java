@@ -38,6 +38,18 @@ public abstract class HudElement
 		elements.remove(this);
 	}
 
+	public static void doThink(int timedelta)
+	{
+		for(HudElement e : elements)
+			e.think(timedelta);
+	}
+
+	public static void doDraw()
+	{
+		for(HudElement e : elements)
+			e.draw();
+	}
+
 	public static void poll()
 	{
 		while(Keyboard.next())

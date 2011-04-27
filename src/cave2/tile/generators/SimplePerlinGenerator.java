@@ -4,7 +4,6 @@ package cave2.tile.generators;
 import java.util.logging.Logger;
 import libnoiseforjava.exception.ExceptionInvalidParam;
 import libnoiseforjava.module.*;
-import cave2.structures.SampleMeasurer;
 import cave2.tile.*;
 import cave2.tile.types.*;
 
@@ -57,7 +56,7 @@ public class SimplePerlinGenerator implements Generator
 			{
 				Tile t;
 				if(generator.getValue(ox+x, oy+y, 0) > threshold)
-					t = new Wall();
+					t = new BreakableWall();
 				else
 					t = new Ground();
 				c.tiles[x][y] = t;

@@ -52,7 +52,12 @@ public class GeneratorThread extends Thread
 		}
 	}
 
-	public GeneratorThread(ThreadGroup group, int threadno)
+	public static void deinit()
+	{
+		group.interrupt();
+	}
+
+	private GeneratorThread(ThreadGroup group, int threadno)
 	{
 		super(group,"GeneratorThread"+threadno);
 	}

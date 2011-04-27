@@ -12,6 +12,7 @@ public interface Tile //implements Serializable
 {
 	public void addedToWorld(World w, int x, int y);
 	public void removedFromWorld(World w, int x, int y);
+	public World getWorld();
 	public void getPos(Vec2 coord);
 	public int getX();
 	public int getY();

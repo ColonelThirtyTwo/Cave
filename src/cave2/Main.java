@@ -1,8 +1,9 @@
 
 package cave2;
 
-import cave2.entities.Entity;
-import cave2.entities.types.Player;
+import cave2.entities.*;
+import cave2.entities.types.*;
+import cave2.entities.types.items.*;
 import cave2.input.PlayerInputListener;
 import java.util.Random;
 import java.util.logging.Level;
@@ -13,12 +14,15 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
-import cave2.rendering.RenderError;
+import cave2.structures.exceptions.RenderError;
 import cave2.rendering.RenderUtil;
 import cave2.rendering.camera.*;
 import cave2.rendering.hud.HudElement;
+import cave2.rendering.hud.InventoryBar;
 import cave2.structures.GeneratorThread;
+import cave2.structures.LogU;
 import cave2.structures.ResourceManager;
+import cave2.structures.exceptions.QuitException;
 import cave2.tile.World;
 import cave2.tile.generators.*;
 
@@ -28,20 +32,30 @@ import cave2.tile.generators.*;
  */
 public class Main
 {
-	private static final Logger log = Logger.getLogger("cave2");
+	private static final Logger log = LogU.getLogger();
+	static { log.setLevel(Level.FINE); }
 
 	private static long lastFrame;
 	private static World world;
 	private static Camera cam;
 
-	private static double fps_smoother;
-
     public static void main(String[] args)
 	{
-		log.setLevel(Level.FINE);
+		try
+		{
+			setup();
+		}
+		finally
+		{
+			log.log(Level.INFO,"Main loop exited, deinitializing.");
+			GeneratorThread.deinit();
+			ResourceManager.getInstance().unloadAll();
+			RenderUtil.destroy();
+		}
+    }
 
-		fps_smoother = 0;
-
+	private static void setup()
+	{
 		DisplayMode mode = getDisplayMode();
 		log.log(Level.INFO, "Attempting to set LWJGL display to {0}x{1}x{2}", new Object[]{mode.getWidth(), mode.getHeight(), mode.getBitsPerPixel()});
         try
@@ -60,14 +74,17 @@ public class Main
 		log.log(Level.INFO, "Intitializing world...");
 		GeneratorThread.init(2);
 
-		//cam = new StaticCamera(world,0,0,RenderUtil.width()/40,RenderUtil.height()/40);
-		Entity e = new Player(5,5);
+		Player e = new Player(5,5);
 		cam = new EntFollowCamera(e,RenderUtil.width()/40,RenderUtil.height()/40);
 
 		world = new World(new SimplePerlinGenerator(0.5,(new Random()).nextInt()), cam);
 		world.addEntity(e);
 
-		(new PlayerInputListener((Player)e)).enable();
+		Entity test = new DrillItem(3,3);
+		world.addEntity(test);
+
+		(new InventoryBar(e)).enable();
+		(new PlayerInputListener(e)).enable();
 
 		log.log(Level.INFO,"Finished initialising, entering main loop.");
 		try
@@ -78,10 +95,11 @@ public class Main
 		{
 			log.log(Level.SEVERE, "Error: {0}", err.getMessage());
 		}
-
-		ResourceManager.getInstance().unloadAll();
-		RenderUtil.destroy();
-    }
+		catch(QuitException exc)
+		{
+			log.log(Level.FINE, "Program terminating due to QuitException.", exc);
+		}
+	}
 
 	private static boolean mainLoop()
 	{
@@ -92,11 +110,12 @@ public class Main
 		int delta = (int)(thisFrame - lastFrame);
 
 		HudElement.poll();
+		HudElement.doThink(delta);
 		world.think(delta);
 		cam.draw();
+		HudElement.doDraw();
 
 		double fps = 1000.0 / delta;
-		//fps_smoother = (fps_smoother * 0.99) + (fps * 0.01);
 		Font f = ResourceManager.getInstance().getFont("monospace");
 		f.drawString(0, 0, String.format("FPS: %.3f", fps), Color.yellow);
 
@@ -114,7 +133,10 @@ public class Main
 		{
 			modes = Display.getAvailableDisplayModes();
 		}
-		catch(LWJGLException err) { throw new RuntimeException(err.getMessage()); }
+		catch(LWJGLException err)
+		{
+			throw new RuntimeException("Could not get display modes from LWJGL.", err);
+		}
 
 		DisplayMode max = modes[0];
 		for(int i=1; i<modes.length; i++)
@@ -122,6 +144,22 @@ public class Main
 					modes[i].getWidth() > max.getWidth())
 				max = modes[i];
 		return max;
+	}
+
+	private static boolean verifySecurity()
+	{
+		try
+		{
+			SecurityManager m = System.getSecurityManager();
+			if(m == null) return true;
+			m.checkRead("res/");
+		}
+		catch(SecurityException e)
+		{
+			log.log(Level.SEVERE, "A security manager is running. Please disable it.");
+			return false;
+		}
+		return true;
 	}
 
 	/** Shut up netbeans... */

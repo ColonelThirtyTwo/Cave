@@ -26,14 +26,14 @@ public abstract class Creature extends CollisionEntity
 	public void damage(String type, double damage)
 	{
 		health -= damage;
-		if(health < 0) die();
+		if(health < 0) onDeath();
 	}
 
 	/**
 	 * Called when the entity goes below 0 health. The default function is to
 	 * remove itself from the world.
 	 */
-	protected void die()
+	protected void onDeath()
 	{
 		this.removedFromWorld(world);
 	}

@@ -5,7 +5,7 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>Cave2</name>
             <source-roots>
-                <root id="src.dir"/>
+                <root id="src.src.dir" name="Source"/>
                 <root id="src.res.dir" name="Resources"/>
             </source-roots>
             <test-roots/>

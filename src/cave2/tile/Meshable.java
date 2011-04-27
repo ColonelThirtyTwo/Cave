@@ -36,6 +36,8 @@ public abstract class Meshable implements Tile
 		this.world = null;
 	}
 
+	public World getWorld() { return world; }
+
 	protected abstract Texture getTileset();
 	protected abstract int getMeshGroup();
 

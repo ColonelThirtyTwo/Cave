@@ -18,6 +18,7 @@ import org.newdawn.slick.opengl.Texture;
 public class DrillItem extends Item
 {
 	private int time;
+	private int bob;
 	private BreakableTile drill;
 
 	public DrillItem(double x, double y)
@@ -28,10 +29,11 @@ public class DrillItem extends Item
 
 	public void draw(AABB bounds)
 	{
+		bob++;
 		if(!box.overlaps(bounds)) return;
 
 		Texture img = ResourceManager.getInstance().getImage("entities/drill.png");
-		double floaty = Math.sin(time/500.0)*0.1;
+		double floaty = Math.sin(bob/100.0)*0.1;
 		RenderUtil.drawImage(img, box.center.x-box.size.x, box.center.y-box.size.y+floaty,
 				box.size.x*2, box.size.y*2, 1.0);
 	}
@@ -74,7 +76,7 @@ public class DrillItem extends Item
 		{
 			if(drill != null)
 			{
-				if(drill.getWorld() != null)
+				if(drill.getHealth() >= 0)
 					drill.damage("normal", timeDelta / 1000.0);
 				else
 					drill = null;

@@ -25,6 +25,7 @@ import cave2.structures.ResourceManager;
 import cave2.structures.exceptions.QuitException;
 import cave2.tile.World;
 import cave2.tile.generators.*;
+import cave2.tile.types.DiamondWall;
 
 /**
  *
@@ -33,7 +34,7 @@ import cave2.tile.generators.*;
 public class Main
 {
 	private static final Logger log = LogU.getLogger();
-	static { log.setLevel(Level.FINE); }
+	static { log.setLevel(Level.FINEST); }
 
 	private static long lastFrame;
 	private static World world;
@@ -73,11 +74,12 @@ public class Main
 
 		log.log(Level.INFO, "Intitializing world...");
 		GeneratorThread.init(2);
+		DiamondWall.addToOreGenerator((new Random()).nextInt());
 
 		Player e = new Player(5,5);
 		cam = new EntFollowCamera(e,RenderUtil.width()/40,RenderUtil.height()/40);
 
-		world = new World(new SimplePerlinGenerator(0.5,(new Random()).nextInt()), cam);
+		world = new World(new OrePerlinGenerator(0.5,(new Random()).nextInt()), cam);
 		world.addEntity(e);
 
 		Entity test = new DrillItem(3,3);
@@ -156,7 +158,7 @@ public class Main
 		}
 		catch(SecurityException e)
 		{
-			log.log(Level.SEVERE, "A security manager is running. Please disable it.");
+			log.log(Level.SEVERE, "A security manager is running. Please disable it.", e);
 			return false;
 		}
 		return true;

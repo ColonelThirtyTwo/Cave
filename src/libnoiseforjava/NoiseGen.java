@@ -74,11 +74,11 @@ public class NoiseGen
       
       // Create a unit-length cube aligned along an integer boundary.  This cube
       // surrounds the input point.
-      int x0 = (x > 0.0? (int)x: (int)x - 1);
+      int x0 = (int)Math.floor(x); //(x > 0.0? (int)x: (int)x - 1);
       int x1 = x0 + 1;
-      int y0 = (y > 0.0? (int)y: (int)y - 1);
+      int y0 = (int)Math.floor(y); //(y > 0.0? (int)y: (int)y - 1);
       int y1 = y0 + 1;
-      int z0 = (z > 0.0? (int)z: (int)z - 1);
+      int z0 = (int)Math.floor(z); //(z > 0.0? (int)z: (int)z - 1);
       int z1 = z0 + 1;
 
       // Map the difference between the coordinates of the input value and the
@@ -130,7 +130,7 @@ public class NoiseGen
          int iy, int iz, int seed)
    {
       
-      VectorTable vectorTable = new VectorTable();
+      //VectorTable vectorTable = new VectorTable();
       // Randomly generate a gradient vector given the integer coordinates of the
       // input value.  This implementation generates a random number and uses it
       // as an index into a normalized-vector lookup table.
@@ -143,9 +143,9 @@ public class NoiseGen
       vectorIndex ^= (vectorIndex >> SHIFT_NOISE_GEN);
       vectorIndex &= 0xff;
       
-      double xvGradient = vectorTable.getRandomVectors(vectorIndex, 0);
-      double yvGradient = vectorTable.getRandomVectors(vectorIndex, 1);
-      double zvGradient = vectorTable.getRandomVectors(vectorIndex, 2);
+      double xvGradient = VectorTable.getRandomVectors(vectorIndex, 0);
+      double yvGradient = VectorTable.getRandomVectors(vectorIndex, 1);
+      double zvGradient = VectorTable.getRandomVectors(vectorIndex, 2);
       // array size too large when using this original, changed to above for all 3
       // double zvGradient = vectorTable.getRandomVectors(vectorIndex << 2, 2);
 

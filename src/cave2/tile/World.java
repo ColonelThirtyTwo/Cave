@@ -16,7 +16,15 @@ import cave2.structures.HashGrid;
  */
 public class World
 {
-	//protected Map<Long,Chunk> spatialMap;
+	public static interface Trace
+	{
+		/**
+		 * Called when the trace has detected a grid intersection.
+		 * @return false to stop tracing.
+		 */
+		public boolean traceCallback(int x, int y);
+	}
+
 	protected HashGrid<Chunk> grid;
 	protected BufferedSet<Entity> ents;
 	protected Generator generator;
@@ -51,6 +59,7 @@ public class World
 		int ox = wrap(x,Chunk.CHUNK_SIZE);
 		int oy = wrap(y,Chunk.CHUNK_SIZE);
 		c.tiles[ox][oy] = t;
+		t.addedToWorld(this, x, y);
 	}
 
 	/**
@@ -245,16 +254,57 @@ public class World
 		return n;
 	}
 
-	public Tile rayTrace(double startx, double starty, double dirx, double diry)
+	public Tile rayTrace(double startx, double starty, double u, double v, Trace callback)
 	{
 		int x = (int)Math.floor(startx);
 		int y = (int)Math.floor(starty);
 
-		double ox = startx - x;
-		double oy = starty - y;
+		double theta = Math.atan(u / v);
 
-		double tmaxx = oy / Math.cos(Math.atan(dirx / diry));
-		double tmaxy = ox / Math.cos(Math.atan(diry / dirx));
+		double tDeltaX = 1.0 / Math.cos(theta);
+		double tDeltaY = 1.0 / Math.sin(theta);
+
+		int stepx, stepy;
+		double d0x, d0y;
+
+		if(u < 0)
+		{
+			d0x = startx - x;
+			stepx = -1;
+		}
+		else
+		{
+			d0x = x + 1 - startx;
+			stepx = 1;
+		}
+
+		if(v < 0)
+		{
+			d0y = starty - y;
+			stepy = -1;
+		}
+		else
+		{
+			d0y = y + 1 - starty;
+			stepy = 1;
+		}
+
+		double tMaxX = d0x * tDeltaX;
+		double tMaxY = d0y * tDeltaY;
+
+		while(callback.traceCallback(x, y))
+		{
+			if(tMaxX < tMaxY)
+			{
+				x += stepx;
+				tMaxX += tDeltaX;
+			}
+			else
+			{
+				y += stepy;
+				tMaxY += tDeltaY;
+			}
+		}
 
 		return null;
 	}

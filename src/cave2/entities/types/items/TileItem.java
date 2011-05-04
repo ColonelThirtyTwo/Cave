@@ -27,6 +27,10 @@ public abstract class TileItem extends StackableItem
 	{
 		super(x,y);
 	}
+	public TileItem(double x, double y, int count)
+	{
+		super(x,y,count);
+	}
 	
 	public int getMaximum()
 	{
@@ -67,6 +71,7 @@ public abstract class TileItem extends StackableItem
 				throw newerr;
 			}
 			ply.getWorld().setTile(gx, gy, t);
+			setCount(getCount() - 1);
 		}
 	}
 
@@ -80,6 +85,7 @@ public abstract class TileItem extends StackableItem
 		// TODO: What to draw? :/
 		Texture t = ResourceManager.getInstance().getImage("entities/crate.png");
 		RenderUtil.drawImage(t, 0, 0, 1, 1);
+		drawItemCount();
 	}
 
 	public void collidedWith(CollisionEntity e)

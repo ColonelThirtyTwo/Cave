@@ -2,6 +2,10 @@
 package cave2.entities;
 
 import cave2.entities.types.Player;
+import cave2.structures.ResourceManager;
+import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 
 /**
  * Stackable Item. Instead of inserting the item into another place in the inventory,
@@ -14,8 +18,13 @@ public abstract class StackableItem extends Item
 
 	public StackableItem(double x, double y)
 	{
+		this(x,y,1);
+	}
+
+	public StackableItem(double x, double y, int count)
+	{
 		super(x,y);
-		count = 1;
+		this.count = count;
 	}
 
 	public void insertIntoInventory(Player ply)
@@ -28,11 +37,20 @@ public abstract class StackableItem extends Item
 		{
 			for(int c=0; c<ply.inventory[r].length; c++)
 			{
-				if(ply.inventory[r][c].getClass().equals(this.getClass()))
+				if(ply.inventory[r][c] == null)
+				{
+					if(nullr == -1)
+					{
+						// Found an empty spot, record it just in case
+						nullr = r;
+						nullc = c;
+					}
+				}
+				else if(ply.inventory[r][c].getClass().equals(this.getClass()))
 				{
 					// Found matching item
 					StackableItem item = (StackableItem)ply.inventory[r][c];
-					if(item.getCount() >= item.getMaximum())
+					if(item.getCount() < item.getMaximum())
 					{
 						// The other item is not full.
 						int transfer = Math.min(count,item.getMaximum() - item.getCount());
@@ -48,17 +66,28 @@ public abstract class StackableItem extends Item
 						assert(count > 0);
 					}
 				}
-				else if(nullr != -1 && ply.inventory[r][c] == null)
-				{
-					// Found an empty spot, record it just in case
-					nullr = r;
-					nullc = c;
-				}
 			}
 		}
 		// Didn't merge with other stacks
-		ply.setItem(nullr, nullc, this);
-		getWorld().removeEntity(this);
+		if(nullr != -1)
+		{
+			ply.setItem(nullr, nullc, this);
+			this.ply = ply;
+			getWorld().removeEntity(this);
+			world = null;
+		}
+	}
+
+	/**
+	 * Draws the item count onto an icon
+	 */
+	protected void drawItemCount()
+	{
+		Font f = ResourceManager.getInstance().getFont("monospace");
+		GL11.glPushMatrix();
+		GL11.glScaled(0.3, 0.3, 1);
+		f.drawString(0.0f, 0.0f, Integer.toString(getCount()), Color.white);
+		GL11.glPopMatrix();
 	}
 
 	public int getCount()
@@ -69,6 +98,13 @@ public abstract class StackableItem extends Item
 	public void setCount(int count)
 	{
 		this.count = count;
+		if(count <= 0)
+		{
+			if(world != null)
+				world.removeEntity(this);
+			else if(ply != null && ply.getEquippedItem() == this)
+				ply.inventory[0][ply.getEquippedSlot()] = null;
+		}
 	}
 
 	public abstract int getMaximum();

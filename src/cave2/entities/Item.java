@@ -63,4 +63,17 @@ public abstract class Item extends CollisionEntity
 	 * Draws an icon for the image. should draw from (0,0) to (1,1).
 	 */
 	public abstract void drawIcon();
+
+	/**
+	 * @return How much this item costs to sell, or -1 if it is not sellable
+	 */
+	public int getSellValue()
+	{
+		return -1;
+	}
+	
+	public int getBuyValue()
+	{
+		return -1;
+	}
 }

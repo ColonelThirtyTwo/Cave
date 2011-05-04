@@ -1,9 +1,14 @@
 
 package cave2.tile.types;
 
+import cave2.entities.Entity;
+import cave2.entities.types.items.tileitems.WallTileItem;
 import cave2.rendering.RenderUtil;
+import cave2.structures.LogU;
 import cave2.structures.ResourceManager;
 import cave2.tile.BreakableTile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.newdawn.slick.opengl.Texture;
 
 /**
@@ -12,7 +17,9 @@ import org.newdawn.slick.opengl.Texture;
  */
 public class BreakableWall extends Wall implements BreakableTile
 {
-	private double health;
+	protected double health;
+
+	private static final Logger log = LogU.getLogger();
 
 	public BreakableWall()
 	{
@@ -21,17 +28,24 @@ public class BreakableWall extends Wall implements BreakableTile
 
 	public void damage(String type, double amount)
 	{
+		if(health <= 0) return;
 		health -= amount;
 		if(health <= 0)
+		{
+			log.log(Level.FINER, "Tile was destroyed due to damage.",this);
 			world.setTile(x, y, new Ground());
+			Entity e = new WallTileItem(x+0.5,y+0.5);
+			world.addEntity(e);
+		}
 	}
 
 	public double getHealth() { return health; }
+	public double getMaxHealth() { return 1.0; }
 
 	public void draw(double x, double y, double w, double h)
 	{
 		super.draw(x,y,w,h);
-		drawCracks(x,y,w,h,health,1.0);
+		drawCracks(x,y,w,h,health,getMaxHealth());
 	}
 
 	public static void drawCracks(double x, double y, double w, double h, double health, double maxhealth)

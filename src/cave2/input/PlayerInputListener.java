@@ -1,12 +1,13 @@
 
 package cave2.input;
 
+import cave2.Main;
 import cave2.entities.types.Player;
 import org.lwjgl.input.Keyboard;
 import cave2.rendering.camera.Camera;
 import cave2.structures.LogU;
 import cave2.structures.Vec2;
-import java.util.logging.Level;
+import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -21,6 +22,7 @@ public class PlayerInputListener extends InputCallback
 	public static int KEY_DOWN = Keyboard.KEY_S;
 	public static int KEY_LEFT = Keyboard.KEY_A;
 	public static int KEY_RIGHT = Keyboard.KEY_D;
+	public static int KEY_RESET = Keyboard.KEY_R;
 
 	public static int BUTTON_MAINUSE = 0;
 	public static int BUTTON_ALTUSE = 1;
@@ -44,13 +46,14 @@ public class PlayerInputListener extends InputCallback
 			ply.setMovementX(down ? 1 : 0);
 		else if(key == KEY_LEFT)
 			ply.setMovementX(down ? -1 : 0);
+		else if(key == KEY_RESET && down)
+			Main.restart(new Random());
 	}
 
 	public void mouseMovedEvent(int newx, int newy, int dx, int dy, int dwheel)
 	{
 		if(dwheel != 0)
 		{
-			log.log(Level.FINE, "Mouse Wheel Event, dwheel = {0}", dwheel);
 			ply.setEquippedSlot(ply.getEquippedSlot() - dwheel / 120);
 		}
 	}
@@ -60,7 +63,6 @@ public class PlayerInputListener extends InputCallback
 		Camera cam = ply.getWorld().getCamera();
 		cam.screen2world(xform, x, y);
 
-		// LWJGL is <sarcasm>cool</sarcasm> in that 1 = LMB and 2 = RMB...
 		if(button == BUTTON_MAINUSE)
 			ply.mainUse(xform.x, xform.y, down);
 		else if(button == BUTTON_ALTUSE)

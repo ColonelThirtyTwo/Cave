@@ -17,4 +17,6 @@ public interface BreakableTile extends Tile
 	 * Returns the health that the tile has
 	 */
 	public double getHealth();
+
+	public double getMaxHealth();
 }

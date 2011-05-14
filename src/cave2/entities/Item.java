@@ -2,6 +2,7 @@
 package cave2.entities;
 
 import cave2.entities.types.Player;
+import cave2.tile.World;
 
 /**
  * Abstract item class.
@@ -14,6 +15,7 @@ public abstract class Item extends CollisionEntity
 	public Item(double x, double y)
 	{
 		super(x,y,0.3,0.3);
+		ply = null;
 	}
 
 	/**
@@ -46,6 +48,12 @@ public abstract class Item extends CollisionEntity
 		doTileCallbacks();
 	}
 
+	public void addedToWorld(World w)
+	{
+		super.addedToWorld(w);
+		ply = null;
+	}
+
 	/**
 	 * Called when the player equips the item in the inventory
 	 */
@@ -69,11 +77,11 @@ public abstract class Item extends CollisionEntity
 	 */
 	public int getSellValue()
 	{
-		return -1;
+		return 0;
 	}
 	
 	public int getBuyValue()
 	{
-		return -1;
+		return 0;
 	}
 }

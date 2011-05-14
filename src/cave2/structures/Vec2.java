@@ -10,6 +10,13 @@ import java.util.Comparator;
  */
 public class Vec2 implements Cloneable
 {
+	public static final double EPSILON = Math.pow(2,-53);
+
+	// Buffers to preform vector operations without the need to allocate them
+	public static final Vec2 buffer = new Vec2();
+	public static final Vec2 buffer2 = new Vec2();
+	public static final Vec2 buffer3 = new Vec2();
+
     public double x, y;
 
     public Vec2() { this(0,0); }
@@ -42,6 +49,13 @@ public class Vec2 implements Cloneable
 	public Vec2 normalizeInto() { return this.divInto(this.length()); }
 
 	public double getDim(int d) { if(d == 0) return x; else return y; }
+
+	public Vec2 set(double x, double y)
+	{
+		this.x = x;
+		this.y = y;
+		return this;
+	}
 
 	public Vec2 rightNormal()
 	{
@@ -196,6 +210,4 @@ public class Vec2 implements Cloneable
 		double dy = y2-y1;
 		return Math.sqrt(dx*dx + dy*dy);
 	}
-
-	public static final double EPSILON = Math.pow(2,-53);
 }

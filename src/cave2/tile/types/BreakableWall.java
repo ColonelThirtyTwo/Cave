@@ -50,7 +50,7 @@ public class BreakableWall extends Wall implements BreakableTile
 
 	public static void drawCracks(double x, double y, double w, double h, double health, double maxhealth)
 	{
-		Texture cracks = ResourceManager.getInstance().getImage("tiles/cracks.png");
+		Texture cracks = ResourceManager.getImage("tiles/cracks.png");
 		int crackedamnt = (int)((1 - health / maxhealth) * 16.0);
 		crackedamnt = Math.min(Math.max(crackedamnt,0), 15);
 

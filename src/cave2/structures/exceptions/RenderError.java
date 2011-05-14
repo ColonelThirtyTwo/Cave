@@ -1,6 +1,8 @@
 
 package cave2.structures.exceptions;
 
+import org.lwjgl.LWJGLException;
+
 /**
  * Generic rendering error exception, usually thrown during initialization.
  * @author Colonel32
@@ -22,4 +24,9 @@ public class RenderError extends RuntimeException
     public RenderError(String msg) {
         super(msg);
     }
+
+	public RenderError(String string, Exception e)
+	{
+		super(string, e);
+	}
 }

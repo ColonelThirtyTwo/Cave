@@ -54,7 +54,13 @@ public class GeneratorThread extends Thread
 
 	public static void deinit()
 	{
-		group.interrupt();
+		if(group != null) group.interrupt();
+		if(taskQueue != null) taskQueue.clear();
+	}
+
+	public static boolean hasItems()
+	{
+		return !taskQueue.isEmpty();
 	}
 
 	private GeneratorThread(ThreadGroup group, int threadno)

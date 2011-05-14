@@ -44,8 +44,12 @@ public class OrePerlinGenerator implements Generator
 	 */
 	public static void addOre(OreConfig conf)
 	{
-		log.log(Level.FINE, "Adding ore generator: {0}", conf);
 		orelist.add(conf);
+	}
+
+	public static void reset()
+	{
+		orelist.clear();
 	}
 
 	private double threshold;
@@ -101,7 +105,6 @@ public class OrePerlinGenerator implements Generator
 					{
 						OreConfig cfg = orelist.get(i);
 						
-						log.log(Level.FINER,"Generating ore: {0}", cfg);
 						if(cfg.getNoiseGen().getValue(ox+x, oy+y, 0) >= cfg.getThreshold())
 						{
 							t = cfg.allocateTile();

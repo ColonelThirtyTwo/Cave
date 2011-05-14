@@ -86,4 +86,9 @@ public abstract class HudElement
 			if(!swallow) InputCallback.doMouseEvent();
 		}
 	}
+
+	public static void reset()
+	{
+		elements.clear();
+	}
 }

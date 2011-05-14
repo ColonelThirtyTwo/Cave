@@ -17,7 +17,7 @@ public class Ground extends AbstractTile
 //		GL11.glColor3d(.6, .4, .2); // Brown
 //		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0); // Bind default texture
 //		RenderUtil.drawBox(x, y, w, h);
-		RenderUtil.drawImage(ResourceManager.getInstance().getImage("tiles/ground.png"), x, y, w, h);
+		RenderUtil.drawImage(ResourceManager.getImage("tiles/ground.png"), x, y, w, h);
 	}
 
 	public void entityEntered(Entity e) {}

@@ -28,7 +28,7 @@ public class RemoverItem extends Item
 	{
 		if(!box.overlaps(bounds)) return;
 
-		Texture img = ResourceManager.getInstance().getImage("entities/remover.png");
+		Texture img = ResourceManager.getImage("entities/remover.png");
 		double floaty = Math.sin(time/500.0)*0.1;
 		RenderUtil.drawImage(img, box.center.x-box.size.x, box.center.y-box.size.y+floaty,
 				box.size.x*2, box.size.y*2, 1.0);
@@ -36,7 +36,7 @@ public class RemoverItem extends Item
 
 	public void drawIcon()
 	{
-		Texture img = ResourceManager.getInstance().getImage("entities/remover.png");
+		Texture img = ResourceManager.getImage("entities/remover.png");
 		RenderUtil.drawImage(img, 0, 0, 1, 1);
 	}
 

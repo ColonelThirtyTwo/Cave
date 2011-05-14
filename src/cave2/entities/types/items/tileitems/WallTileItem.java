@@ -34,8 +34,8 @@ public class WallTileItem extends TileItem
 
 	public void drawIcon()
 	{
-		Texture t = ResourceManager.getInstance().getImage("tiles/testwall.png");
-		RenderUtil.drawImage(t, 0.1, 0.1, 0.8, 0.8, 1, 0, 0, 0.5, 0.5);
+		Texture t = ResourceManager.getImage("tiles/testwall.png");
+		RenderUtil.drawImage(t, 0.15, 0.15, 0.7, 0.7, 1, 0, 0, 0.5, 0.5);
 		drawItemCount();
 	}
 
@@ -43,7 +43,7 @@ public class WallTileItem extends TileItem
 	{
 		bob++;
 		if(!box.overlaps(clip)) return;
-		Texture t = ResourceManager.getInstance().getImage("tiles/testwall.png");
+		Texture t = ResourceManager.getImage("tiles/testwall.png");
 		RenderUtil.drawImage(t, box.center.x - box.size.x, box.center.y - box.size.y + Math.sin(bob/100.0)*0.1,
 				box.size.x*2, box.size.y*2, 1, 0, 0, 0.5, 0.5);
 	}

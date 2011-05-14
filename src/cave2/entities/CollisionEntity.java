@@ -45,6 +45,12 @@ public abstract class CollisionEntity implements Entity
 	 */
 	public int getTileY() { return (int)Math.floor(box.center.y); }
 
+	public void setPos(double x, double y)
+	{
+		box.center.x = x;
+		box.center.y = y;
+	}
+
 	/**
 	 * Does tile enter/exit callbacks. Should be called by subclasses.
 	 */

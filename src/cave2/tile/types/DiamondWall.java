@@ -47,7 +47,7 @@ public class DiamondWall extends BreakableWall
 
 	protected Texture getTileset()
 	{
-		return ResourceManager.getInstance().getImage("tiles/diamondore.png");
+		return ResourceManager.getImage("tiles/diamondore.png");
 	}
 
 	private static class DiamondConfig implements OrePerlinGenerator.OreConfig

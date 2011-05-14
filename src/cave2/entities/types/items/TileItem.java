@@ -83,7 +83,7 @@ public abstract class TileItem extends StackableItem
 	public void drawIcon()
 	{
 		// TODO: What to draw? :/
-		Texture t = ResourceManager.getInstance().getImage("entities/crate.png");
+		Texture t = ResourceManager.getImage("entities/crate.png");
 		RenderUtil.drawImage(t, 0, 0, 1, 1);
 		drawItemCount();
 	}
@@ -95,7 +95,7 @@ public abstract class TileItem extends StackableItem
 	public void draw(AABB clip)
 	{
 		// TODO: What to draw? :/
-		Texture t = ResourceManager.getInstance().getImage("entities/crate.png");
+		Texture t = ResourceManager.getImage("entities/crate.png");
 		RenderUtil.drawImage(t, box, 1.0);
 	}
 

@@ -31,7 +31,7 @@ public class TestEntity extends CollisionEntity
 		// Don't draw if we are drawing way off screen
 		if(!box.overlaps(camera)) return;
 
-		Texture t = ResourceManager.getInstance().getImage("entities/testent.png");
+		Texture t = ResourceManager.getImage("entities/testent.png");
 		RenderUtil.drawImage(t, box.center.x - box.size.x, box.center.y - box.size.y,
 				box.size.x*2, box.size.y*2);
 	}

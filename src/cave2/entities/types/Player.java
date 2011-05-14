@@ -22,11 +22,15 @@ public class Player extends Creature
 	 */
 	protected int equippedItem;
 
+	public int money;
+
 	public Player(double x, double y)
 	{
 		super(x,y,0.4,0.4,100.0);
 		inventory = new Item[4][9];
 		equippedItem = 0;
+
+		money = 100;
 	}
 
 	public void collidedWith(CollisionEntity e)
@@ -52,7 +56,7 @@ public class Player extends Creature
 	{
 		if(!abox.overlaps(box)) return;
 		
-		Texture img = ResourceManager.getInstance().getImage("entities/player.png");
+		Texture img = ResourceManager.getImage("entities/player.png");
 		RenderUtil.drawImage(img, box, 1.0);
 	}
 

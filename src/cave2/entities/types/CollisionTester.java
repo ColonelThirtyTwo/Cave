@@ -36,9 +36,9 @@ public class CollisionTester extends CollisionEntity
 	{
 		Texture t;
 		if(hasCollided)
-			t = ResourceManager.getInstance().getImage("colors/red.png");
+			t = ResourceManager.getImage("colors/red.png");
 		else
-			t = ResourceManager.getInstance().getImage("colors/blue.png");
+			t = ResourceManager.getImage("colors/blue.png");
 		RenderUtil.drawImage(t, box, 1);
 		hasCollided = false;
 	}

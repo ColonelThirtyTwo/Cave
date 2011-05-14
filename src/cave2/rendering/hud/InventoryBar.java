@@ -21,7 +21,7 @@ public class InventoryBar extends HudElement
 
 	public void draw()
 	{
-		Texture image = ResourceManager.getInstance().getImage("hud/inventory_bar.png");
+		Texture image = ResourceManager.getImage("hud/inventory_bar.png");
 		final int scale = 2;
 		float posx = RenderUtil.width() - 164*scale;
 		float posy = RenderUtil.height() - 20*scale;
@@ -39,7 +39,7 @@ public class InventoryBar extends HudElement
 			GL11.glPopMatrix();
 		}
 		
-		image = ResourceManager.getInstance().getImage("hud/inventory_selected.png");
+		image = ResourceManager.getImage("hud/inventory_selected.png");
 		RenderUtil.drawImage(image, posx+(2+18*ply.getEquippedSlot())*scale,posy+2*scale,16*scale,16*scale);
 	}
 

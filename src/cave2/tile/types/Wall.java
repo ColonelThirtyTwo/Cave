@@ -22,7 +22,7 @@ public class Wall extends Meshable
 	}
 	protected Texture getTileset()
 	{
-		return ResourceManager.getInstance().getImage("tiles/testwall.png");
+		return ResourceManager.getImage("tiles/testwall.png");
 	}
 
 	public void entityEntered(Entity e) {}

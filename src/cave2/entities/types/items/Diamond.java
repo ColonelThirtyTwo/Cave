@@ -33,7 +33,7 @@ public class Diamond extends Item
 
 	public void drawIcon()
 	{
-		Texture img = ResourceManager.getInstance().getImage("entities/diamond.png");
+		Texture img = ResourceManager.getImage("entities/diamond.png");
 		RenderUtil.drawImage(img, 0, 0, 1, 1);
 	}
 
@@ -62,7 +62,7 @@ public class Diamond extends Item
 		bob++;
 		if(!box.overlaps(bounds)) return;
 
-		Texture img = ResourceManager.getInstance().getImage("entities/diamond.png");
+		Texture img = ResourceManager.getImage("entities/diamond.png");
 		double floaty = Math.sin(bob/100.0)*0.1;
 		RenderUtil.drawImage(img, box.center.x-box.size.x, box.center.y-box.size.y+floaty,
 				box.size.x*2, box.size.y*2, 1.0);

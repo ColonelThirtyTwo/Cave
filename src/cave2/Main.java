@@ -4,6 +4,8 @@ package cave2;
 import cave2.entities.*;
 import cave2.entities.types.*;
 import cave2.entities.types.items.*;
+import cave2.input.InputCallback;
+import cave2.input.MenuListener;
 import cave2.input.PlayerInputListener;
 import java.util.Random;
 import java.util.logging.Level;
@@ -19,6 +21,7 @@ import cave2.rendering.RenderUtil;
 import cave2.rendering.camera.*;
 import cave2.rendering.hud.HudElement;
 import cave2.rendering.hud.InventoryBar;
+import cave2.structures.AABB;
 import cave2.structures.GeneratorThread;
 import cave2.structures.LogU;
 import cave2.structures.ResourceManager;
@@ -44,18 +47,33 @@ public class Main
 	{
 		try
 		{
-			setup();
+			setup_initial();
+			while(mainLoop()) {}
+		}
+		catch(QuitException e)
+		{
+			log.log(Level.FINE, "Program terminating due to QuitException.", e);
+		}
+		catch(Exception e)
+		{
+			log.log(Level.SEVERE,"Terminating due to exception", e);
 		}
 		finally
 		{
 			log.log(Level.INFO,"Main loop exited, deinitializing.");
 			GeneratorThread.deinit();
-			ResourceManager.getInstance().unloadAll();
+			ResourceManager.unloadAll();
 			RenderUtil.destroy();
 		}
     }
 
-	private static void setup()
+	private static void setup_initial()
+	{
+		if(!setup_renderer()) return;
+		restart(new Random());
+	}
+	
+	private static boolean setup_renderer()
 	{
 		DisplayMode mode = getDisplayMode();
 		log.log(Level.INFO, "Attempting to set LWJGL display to {0}x{1}x{2}", new Object[]{mode.getWidth(), mode.getHeight(), mode.getBitsPerPixel()});
@@ -66,41 +84,54 @@ public class Main
 		catch(RenderError err)
 		{
 			log.log(Level.SEVERE, "Could not initialize LWJGL: {0}", err.getMessage());
-			return;
+			return false;
 		}
 		log.log(Level.INFO, "LWJGL Initialized sucessfully.");
+		return true;
+	}
 
-		lastFrame = System.currentTimeMillis();
+	public static void restart(Random random)
+	{
+		log.log(Level.INFO,"(Re)Initializing world");
 
-		log.log(Level.INFO, "Intitializing world...");
-		GeneratorThread.init(2);
-		DiamondWall.addToOreGenerator((new Random()).nextInt());
+		GeneratorThread.deinit();
+		HudElement.reset();
+		OrePerlinGenerator.reset();
+		InputCallback.reset();
 
 		Player e = new Player(5,5);
+		
 		cam = new EntFollowCamera(e,RenderUtil.width()/40,RenderUtil.height()/40);
+		world = new World(new OrePerlinGenerator(0.5,random.nextInt()), cam);
+		cam.setWorld(world);
 
-		world = new World(new OrePerlinGenerator(0.5,(new Random()).nextInt()), cam);
+		Entity test = new DrillItem(5,5);
 		world.addEntity(e);
-
-		Entity test = new DrillItem(3,3);
 		world.addEntity(test);
+
+		DiamondWall.addToOreGenerator(random.nextInt());
+
+		GeneratorThread.init(2);
+		AABB initialWorld = new AABB(0,0,200,200);
+		world.generateRegion(initialWorld);
+		try
+		{
+			while(GeneratorThread.hasItems())
+			{
+				Thread.sleep(100);
+			}
+		}
+		catch(InterruptedException err)
+		{
+			log.log(Level.WARNING, "Someone tried to interrupt the main thread. Jerks.");
+		}
 
 		(new InventoryBar(e)).enable();
 		(new PlayerInputListener(e)).enable();
+		(new MenuListener(e)).enable();
 
-		log.log(Level.INFO,"Finished initialising, entering main loop.");
-		try
-		{
-			while(mainLoop()) {}
-		}
-		catch(RenderError err)
-		{
-			log.log(Level.SEVERE, "Error: {0}", err.getMessage());
-		}
-		catch(QuitException exc)
-		{
-			log.log(Level.FINE, "Program terminating due to QuitException.", exc);
-		}
+		lastFrame = System.currentTimeMillis();
+		log.log(Level.INFO,"Finished initialising world.");
 	}
 
 	private static boolean mainLoop()
@@ -118,11 +149,11 @@ public class Main
 		HudElement.doDraw();
 
 		double fps = 1000.0 / delta;
-		Font f = ResourceManager.getInstance().getFont("monospace");
+		Font f = ResourceManager.getFont("monospace");
 		f.drawString(0, 0, String.format("FPS: %.3f", fps), Color.yellow);
 
 		RenderUtil.update();
-		Display.sync(60);
+		//Display.sync(60);
 
 		lastFrame = thisFrame;
 		return true;

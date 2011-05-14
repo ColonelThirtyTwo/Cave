@@ -41,4 +41,9 @@ public abstract class InputCallback
 			for(int i=0; i<callbackList.size(); i++)
 				callbackList.get(i).mouseMovedEvent(Mouse.getEventX(), Mouse.getEventY(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel());
 	}
+
+	public static void reset()
+	{
+		callbackList.clear();
+	}
 }

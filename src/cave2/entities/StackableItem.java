@@ -83,10 +83,10 @@ public abstract class StackableItem extends Item
 	 */
 	protected void drawItemCount()
 	{
-		Font f = ResourceManager.getInstance().getFont("monospace");
+		Font f = ResourceManager.getFont("monospace");
 		GL11.glPushMatrix();
-		GL11.glScaled(0.3, 0.3, 1);
-		f.drawString(0.0f, 0.0f, Integer.toString(getCount()), Color.white);
+		GL11.glScaled(0.02, 0.02, 1);
+		f.drawString(0.0f, 0.0f, Integer.toString(getCount()), Color.red);
 		GL11.glPopMatrix();
 	}
 

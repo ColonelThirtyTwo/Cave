@@ -12,7 +12,7 @@ import cave2.tile.Tile;
 import org.newdawn.slick.opengl.Texture;
 
 /**
- * Tool that does 1 point of "normal" damage per second on any breakable tiles.
+ * Tool that does large amounts of "normal" damage on tiles.
  * @author Colonel32
  */
 public class DrillItem extends Item
@@ -32,7 +32,7 @@ public class DrillItem extends Item
 		bob++;
 		if(!box.overlaps(bounds)) return;
 
-		Texture img = ResourceManager.getInstance().getImage("entities/drill.png");
+		Texture img = ResourceManager.getImage("entities/drill.png");
 		double floaty = Math.sin(bob/100.0)*0.1;
 		RenderUtil.drawImage(img, box.center.x-box.size.x, box.center.y-box.size.y+floaty,
 				box.size.x*2, box.size.y*2, 1.0);
@@ -40,7 +40,7 @@ public class DrillItem extends Item
 
 	public void drawIcon()
 	{
-		Texture img = ResourceManager.getInstance().getImage("entities/drill.png");
+		Texture img = ResourceManager.getImage("entities/drill.png");
 		RenderUtil.drawImage(img, 0, 0, 1, 1);
 	}
 
@@ -77,7 +77,7 @@ public class DrillItem extends Item
 			if(drill != null)
 			{
 				if(drill.getHealth() >= 0)
-					drill.damage("normal", timeDelta / 1000.0);
+					drill.damage("normal", timeDelta / 500.0);
 				else
 					drill = null;
 			}
@@ -90,5 +90,14 @@ public class DrillItem extends Item
 
 	public void unequip()
 	{
+	}
+
+	public int getBuyValue()
+	{
+		return 30;
+	}
+	public int getSellValue()
+	{
+		return 20;
 	}
 }

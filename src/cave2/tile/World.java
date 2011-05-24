@@ -52,6 +52,12 @@ public class World
 		return c.tiles[ox][oy];
 	}
 
+	public Tile getTileAt(double x, double y)
+	{
+		return getTileAt((int)Math.floor(x), (int)Math.floor(y));
+	}
+
+
 	public void setTile(int x, int y, Tile t)
 	{
 		Chunk c = getContainingChunk(x,y);

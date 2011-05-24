@@ -26,6 +26,7 @@ import cave2.structures.GeneratorThread;
 import cave2.structures.LogU;
 import cave2.structures.ResourceManager;
 import cave2.structures.exceptions.QuitException;
+import cave2.structures.pathfinding.PathFinder;
 import cave2.tile.World;
 import cave2.tile.generators.*;
 import cave2.tile.types.DiamondWall;
@@ -62,6 +63,7 @@ public class Main
 		{
 			log.log(Level.INFO,"Main loop exited, deinitializing.");
 			GeneratorThread.deinit();
+			PathFinder.deinit();
 			ResourceManager.unloadAll();
 			RenderUtil.destroy();
 		}
@@ -98,6 +100,7 @@ public class Main
 		HudElement.reset();
 		OrePerlinGenerator.reset();
 		InputCallback.reset();
+		PathFinder.deinit();
 
 		Player e = new Player(5,5);
 		
@@ -105,13 +108,8 @@ public class Main
 		world = new World(new OrePerlinGenerator(0.5,random.nextInt()), cam);
 		cam.setWorld(world);
 
-		Entity test = new DrillItem(5,5);
-		world.addEntity(e);
-		world.addEntity(test);
-
-		DiamondWall.addToOreGenerator(random.nextInt());
-
 		GeneratorThread.init(2);
+		PathFinder.init(3);
 		AABB initialWorld = new AABB(0,0,200,200);
 		world.generateRegion(initialWorld);
 		try
@@ -125,6 +123,14 @@ public class Main
 		{
 			log.log(Level.WARNING, "Someone tried to interrupt the main thread. Jerks.");
 		}
+
+		Entity test = new DrillItem(5,5);
+		Entity test2 = new PathFinderItem(5,5);
+		world.addEntity(e);
+		world.addEntity(test);
+		world.addEntity(test2);
+
+		DiamondWall.addToOreGenerator(random.nextInt());
 
 		(new InventoryBar(e)).enable();
 		(new PlayerInputListener(e)).enable();

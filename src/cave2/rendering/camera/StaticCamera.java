@@ -15,5 +15,5 @@ public class StaticCamera extends AbstractCamera
 		box = new AABB(x,y,w/2,h/2);
 	}
 
-	protected AABB getCameraBounds() { return box; }
+	public AABB getCameraBounds() { return box; }
 }

@@ -25,6 +25,7 @@ public abstract class Creature extends CollisionEntity
 	 */
 	public void damage(String type, double damage)
 	{
+		if(world == null) return;
 		health -= damage;
 		if(health < 0) onDeath();
 	}
@@ -35,7 +36,8 @@ public abstract class Creature extends CollisionEntity
 	 */
 	protected void onDeath()
 	{
-		this.removedFromWorld(world);
+		world.removeEntity(this);
+		world = null;
 	}
 
 	public double getHealth() { return health; }

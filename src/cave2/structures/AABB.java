@@ -70,11 +70,6 @@ public class AABB implements Cloneable
 		return Math.abs(x - center.x) <= size.x && Math.abs(y - center.y) <= size.y;
 	}
 
-//	private static double abs(double value)
-//	{
-//		return value < 0 ? -value : value;
-//	}
-
 	public boolean equals(Object o)
 	{
 		if(!(o instanceof AABB))

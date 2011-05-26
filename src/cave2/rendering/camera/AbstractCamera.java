@@ -22,8 +22,6 @@ public abstract class AbstractCamera implements Camera
 
 	public void setWorld(World w) { world = w; }
 
-	protected abstract AABB getCameraBounds();
-
 	public void draw()
 	{
 		AABB box = getCameraBounds();

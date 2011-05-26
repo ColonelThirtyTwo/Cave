@@ -72,12 +72,13 @@ public abstract class CollisionEntity implements Entity
 	/**
 	 * Tile collision algorithm. Moves the entity out of a tile it is colliding with.
 	 */
-	protected void doTileCollisions()
+	protected boolean doTileCollisions()
 	{
 		Tile[] adj = new Tile[9];
 		world.getAdjacent(adj, getTileX(), getTileY());
 		adj[8] = world.getTileAt(getTileX(), getTileY());
 
+		boolean hitone = false;
 		AABB tilebox = new AABB(0,0,0.5,0.5);
 		for(int i=0; i<adj.length; i++)
 		{
@@ -89,7 +90,10 @@ public abstract class CollisionEntity implements Entity
 
 			Vec2 overlap = tilebox.getOverlap(box);
 			box.center.addInto(overlap);
+			hitone = true;
 		}
+
+		return hitone;
 	}
 
 	/**

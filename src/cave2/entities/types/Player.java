@@ -16,21 +16,22 @@ import cave2.structures.ResourceManager;
 public class Player extends Creature
 {
 	public Item[][] inventory;
+
+	private int recovertime;
+	private int blinktimer;
 	
 	/**
 	 * Column of the currently equipped item. Item must be on the first row.
 	 */
 	protected int equippedItem;
 
-	public int money;
-
 	public Player(double x, double y)
 	{
 		super(x,y,0.4,0.4,100.0);
 		inventory = new Item[4][9];
 		equippedItem = 0;
-
-		money = 100;
+		recovertime = 0;
+		blinktimer = 0;
 	}
 
 	public void collidedWith(CollisionEntity e)
@@ -44,9 +45,15 @@ public class Player extends Creature
 
 	public void think(int delta)
 	{
+		if(world == null) return;
 		move(delta);
 		doTileCollisions();
 		doTileCallbacks();
+
+		if(recovertime > 0) recovertime -= delta;
+		else blinktimer = recovertime = 0;
+
+		if(health < 100) health += delta * 0.001;
 
 		if(inventory[0][equippedItem] != null)
 			inventory[0][equippedItem].think(delta);
@@ -54,10 +61,19 @@ public class Player extends Creature
 
 	public void draw(AABB abox)
 	{
+		if(world == null) return;
 		if(!abox.overlaps(box)) return;
-		
+
 		Texture img = ResourceManager.getImage("entities/player.png");
-		RenderUtil.drawImage(img, box, 1.0);
+
+		if(recovertime > 0)
+		{
+			blinktimer++;
+			if((blinktimer / 2) % 2 == 0)
+				RenderUtil.drawImage(img, box, 1.0);
+		}
+		else
+			RenderUtil.drawImage(img, box, 1.0);
 	}
 
 	protected double getSpeed() { return 5.0; }
@@ -118,5 +134,14 @@ public class Player extends Creature
 
 		if(inventory[0][oldslot] != null) inventory[0][oldslot].unequip();
 		if(inventory[0][equippedItem] != null) inventory[0][equippedItem].equip();
+	}
+
+	public void damage(String type, double damage)
+	{
+		if(world == null) return;
+		if(recovertime > 0) return;
+		super.damage(type,damage);
+		if(world != null)
+			recovertime = 1000;
 	}
 }

@@ -30,6 +30,7 @@ import cave2.structures.pathfinding.PathFinder;
 import cave2.tile.World;
 import cave2.tile.generators.*;
 import cave2.tile.types.DiamondWall;
+import java.awt.Canvas;
 
 /**
  *
@@ -38,11 +39,23 @@ import cave2.tile.types.DiamondWall;
 public class Main
 {
 	private static final Logger log = LogU.getLogger();
-	static { log.setLevel(Level.FINEST); }
+	static { log.setLevel(Level.FINE); }
 
 	private static long lastFrame;
 	private static World world;
 	private static Camera cam;
+	private static boolean requestExit = false;
+
+	private static Cave2Applet applet;
+	static void setApplet(Cave2Applet app)
+	{
+		applet = app;
+	}
+	
+	public static void stop()
+	{
+		requestExit = true;
+	}
 
     public static void main(String[] args)
 	{
@@ -71,17 +84,40 @@ public class Main
 
 	private static void setup_initial()
 	{
-		if(!setup_renderer()) return;
+		if(applet == null)
+		{
+			if(!setup_renderer()) return;
+		}
+		else
+		{
+			if(!setup_render_applet(applet.canvas)) return;
+		}
 		restart(new Random());
 	}
 	
-	private static boolean setup_renderer()
+	static boolean setup_renderer()
 	{
 		DisplayMode mode = getDisplayMode();
 		log.log(Level.INFO, "Attempting to set LWJGL display to {0}x{1}x{2}", new Object[]{mode.getWidth(), mode.getHeight(), mode.getBitsPerPixel()});
         try
 		{
 			RenderUtil.initialize(mode, true);
+		}
+		catch(RenderError err)
+		{
+			log.log(Level.SEVERE, "Could not initialize LWJGL: {0}", err.getMessage());
+			return false;
+		}
+		log.log(Level.INFO, "LWJGL Initialized sucessfully.");
+		return true;
+	}
+
+	static boolean setup_render_applet(Canvas canvas)
+	{
+		log.log(Level.INFO, "Attempting to set LWJGL display to applet canvas");
+		try
+		{
+			RenderUtil.initialize_applet(canvas);
 		}
 		catch(RenderError err)
 		{
@@ -102,10 +138,13 @@ public class Main
 		InputCallback.reset();
 		PathFinder.deinit();
 
+		DiamondWall.addToOreGenerator(random.nextInt());
+
 		Player e = new Player(5,5);
+		Zombie.setPlayer(e);
 		
 		cam = new EntFollowCamera(e,RenderUtil.width()/40,RenderUtil.height()/40);
-		world = new World(new OrePerlinGenerator(0.5,random.nextInt()), cam);
+		world = new World(new OrePerlinGenerator(0.6,random.nextInt()), cam);
 		cam.setWorld(world);
 
 		GeneratorThread.init(2);
@@ -115,9 +154,7 @@ public class Main
 		try
 		{
 			while(GeneratorThread.hasItems())
-			{
 				Thread.sleep(100);
-			}
 		}
 		catch(InterruptedException err)
 		{
@@ -125,12 +162,12 @@ public class Main
 		}
 
 		Entity test = new DrillItem(5,5);
-		Entity test2 = new PathFinderItem(5,5);
+		Entity test2 = new Gun(5,5);
+		Entity zombiespawner = new Zombie.AmbientSpawner();
 		world.addEntity(e);
 		world.addEntity(test);
 		world.addEntity(test2);
-
-		DiamondWall.addToOreGenerator(random.nextInt());
+		world.addEntity(zombiespawner);
 
 		(new InventoryBar(e)).enable();
 		(new PlayerInputListener(e)).enable();
@@ -144,6 +181,7 @@ public class Main
 	{
 		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) return false;
 		if(Display.isCloseRequested()) return false;
+		if(requestExit) return false;
 
 		long thisFrame = System.currentTimeMillis();
 		int delta = (int)(thisFrame - lastFrame);

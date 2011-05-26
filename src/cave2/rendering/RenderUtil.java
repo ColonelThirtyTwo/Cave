@@ -12,6 +12,7 @@ import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.opengl.Texture;
 import cave2.structures.AABB;
 import cave2.structures.Vec2;
+import java.awt.Canvas;
 import org.lwjgl.openal.AL;
 import org.newdawn.slick.openal.Audio;
 
@@ -44,7 +45,31 @@ public final class RenderUtil {
 			throw new RenderError("Error initializing LWJGL", e);
 		}
 
-		// Set up GL stuff
+		initialize_gl();
+	}
+
+	public static void initialize_applet(Canvas c) throws RenderError {
+		width = c.getWidth();
+		height = c.getHeight();
+		isFullscreen = false;
+		try
+		{
+			Display.setParent(c);
+			Display.create();
+
+			AL.create();
+
+			Mouse.create();
+			Keyboard.create();
+		} catch (LWJGLException e) {
+			throw new RenderError("Error initializing LWJGL", e);
+		}
+
+		initialize_gl();
+	}
+
+	private static void initialize_gl()
+	{
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);

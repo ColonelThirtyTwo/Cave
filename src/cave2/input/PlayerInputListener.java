@@ -38,6 +38,7 @@ public class PlayerInputListener extends InputCallback
 
 	public void keyEvent(int key, boolean down)
 	{
+		if(ply.getWorld() == null) return;
 		if(key == KEY_UP)
 			ply.setMovementY(down ? -1 : 0);
 		else if(key == KEY_DOWN)
@@ -52,6 +53,7 @@ public class PlayerInputListener extends InputCallback
 
 	public void mouseMovedEvent(int newx, int newy, int dx, int dy, int dwheel)
 	{
+		if(ply.getWorld() == null) return;
 		if(dwheel != 0)
 		{
 			ply.setEquippedSlot(ply.getEquippedSlot() - dwheel / 120);
@@ -60,6 +62,7 @@ public class PlayerInputListener extends InputCallback
 
 	public void mouseButtonEvent(int x, int y, int button, boolean down)
 	{
+		if(ply.getWorld() == null) return;
 		Camera cam = ply.getWorld().getCamera();
 		cam.screen2world(xform, x, y);
 

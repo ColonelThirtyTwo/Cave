@@ -44,11 +44,13 @@ public class OrePerlinGenerator implements Generator
 	 */
 	public static void addOre(OreConfig conf)
 	{
+		log.log(Level.INFO, "Adding ore generator: {0}",conf);
 		orelist.add(conf);
 	}
 
 	public static void reset()
 	{
+		log.log(Level.INFO, "Resetting ores");
 		orelist.clear();
 	}
 
